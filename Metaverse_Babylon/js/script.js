@@ -49,10 +49,6 @@ function main() {
       light.specular = new BABYLON.Color3(1, 1, 1); // スペキュラカラー
       light.groundColor = new BABYLON.Color3(0.8, 0.8, 0.8); // 地面のカラー
       light.intensity = 1; // ライトの強度
-      // Skyboxの作成
-      // scene.environmentTexture = BABYLON.CubeTexture.CreateFromPrefilteredData("/textures/SpecularHDR.dds", scene);
-      // scene.createDefaultSkybox(scene.environmentTexture);
-
 
       //背景画像-----------------------------------------------------------------------------------
       var dome = new BABYLON.PhotoDome(
@@ -77,7 +73,7 @@ function main() {
 
 
 
-    BABYLON.SceneLoader.ImportMesh("","./Models/", "classroom_window.glb", scene, 
+    BABYLON.SceneLoader.ImportMesh("","https://raw.githubusercontent.com/TaigaYamabe/GLB_data/main/","classroom_window.glb", scene, 
     //BABYLON.SceneLoader.ImportMesh("","./Models/", "lab.glb", scene, 
     function (meshes) {
       console.log(meshes.length);

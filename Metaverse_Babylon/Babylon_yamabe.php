@@ -119,22 +119,6 @@ var jsArray1 = <?php echo json_encode($phpArray1); ?>;
 var jsArray2 = <?php echo json_encode($phpArray2); ?>;
 </script>
     <script type="text/javascript" src=js/script.js></script>
-
-    <?php
-    //  $raw = file_get_contents('php://input'); // POSTされた生のデータを受け取る
-    //  $data = json_decode($raw, true); // json形式をphp変数に変換
-     //header("Content-type: text/plain; charset=UTF-8");
-    //  foreach ($data as $item) {
-    //     echo $item . "<br>";
-    // }
-
-    //  if(isset($data[0])){
-    //  setcookie('Cookie0',$data[0]);
-    //  setcookie('Cookie1',$data[1]);
-    //  setcookie('Cookie2',$data[2]);
-    //  }
-    ?>
-
     <button onclick="location.href='3D.php'">更新</button>
 </body>
 </html>
