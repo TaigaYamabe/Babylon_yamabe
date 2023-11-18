@@ -40,5 +40,5 @@ foreach ($csvArray as $row) {
 fclose($fileHandle);
 ?>
 <?php
-	header("Location:3D.php");
+	header("Location:Babylon_yamabe.php");
 ?>

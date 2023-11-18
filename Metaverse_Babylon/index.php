@@ -73,7 +73,7 @@ if( !empty($_FILES['file2']['tmp_name']) && is_uploaded_file($_FILES['file2']['t
 }
 ?></p>
 <?php
-	header("Location:3D.php");
+	header("Location:Babylon_yamabe.php");
 ?>
 </body>
 </html>
