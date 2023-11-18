@@ -15,7 +15,7 @@
 
         #renderCanvas {
             overflow: hidden;
-            width   : 90%;
+            width   : 100%;
             height  : 100%;
             touch-action: none;
         }
