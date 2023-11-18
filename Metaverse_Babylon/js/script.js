@@ -73,7 +73,7 @@ function main() {
 
 
 
-    BABYLON.SceneLoader.ImportMesh("","https://raw.githubusercontent.com/TaigaYamabe/GLB_data/main/","classroom_window.glb", scene, 
+    BABYLON.SceneLoader.ImportMesh("","./Models/","classroom_window.glb", scene, 
     //BABYLON.SceneLoader.ImportMesh("","./Models/", "lab.glb", scene, 
     function (meshes) {
       console.log(meshes.length);

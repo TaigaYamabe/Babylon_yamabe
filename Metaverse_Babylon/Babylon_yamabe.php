@@ -6,7 +6,7 @@
     <title>Sample Scene</title>
     <style>
         html, body {
-            overflow: scroll;
+            overflow: hidden;
             width   : 100%;
             height  : 100%;
             margin  : 0;
@@ -32,10 +32,10 @@
     </form>
 
 
-    <form enctype="multipart/form-data"  action="index.php" method="POST">
+    <!-- <form enctype="multipart/form-data"  action="index.php" method="POST">
         <input type="file" name="file2" value="value" />
         <input type="submit" value="空間アップロード" />
-    </form>
+    </form> -->
 
     <form action="csvWrite.php" method="post" id="myForm">
         <input type="hidden" name="csvArray" id="csvArray" value="">
@@ -119,6 +119,5 @@ var jsArray1 = <?php echo json_encode($phpArray1); ?>;
 var jsArray2 = <?php echo json_encode($phpArray2); ?>;
 </script>
     <script type="text/javascript" src=js/script.js></script>
-    <button onclick="location.href='3D.php'">更新</button>
 </body>
 </html>
