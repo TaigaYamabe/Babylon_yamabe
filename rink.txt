@@ -1,0 +1,15 @@
+参考サイト一覧
+
+1.glb形式のモデル表示
+https://note.com/ivan622/n/n04369828c700
+
+2.ファイルアップロード機能
+https://web-camp.io/magazine/archives/94835
+
+3.submitでページ遷移させない
+https://maaengineerhouse.com/archives/1551
+
+4.MAMPでPHPの動作環境を作成
+https://blanche-toile.com/web/windows-mamp
+4.githubからアセット持ってくる
+https://qiita.com/iwaken71/items/9e486a6ca347fac5d387

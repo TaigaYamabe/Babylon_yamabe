@@ -1,0 +1,32 @@
+{
+  "name": "@sora/sdk",
+  "scripts": {
+    "build": "rollup -c rollup.config.mjs --bundleConfigAsCjs",
+    "watch": "rollup -c -w",
+    "lint": "eslint --ext .ts ./src",
+    "fmt": "prettier --write src",
+    "test": "vitest run"
+  },
+  "devDependencies": {
+    "@rollup/plugin-commonjs": "25.0.2",
+    "@rollup/plugin-node-resolve": "15.1.0",
+    "@rollup/plugin-replace": "5.0.2",
+    "@rollup/plugin-typescript": "11.1.2",
+    "@shiguredo/lyra-wasm": "2023.1.0",
+    "@typescript-eslint/eslint-plugin": "5.61.0",
+    "@typescript-eslint/parser": "5.61.0",
+    "eslint": "8.44.0",
+    "eslint-config-prettier": "8.8.0",
+    "eslint-plugin-prettier": "4.2.1",
+    "jsdom": "22.1.0",
+    "prettier": "2.8.8",
+    "rollup": "3.26.2",
+    "rollup-plugin-delete": "2.0.0",
+    "typescript": "5.1.6",
+    "vitest": "0.33.0"
+  },
+  "dependencies": {
+    "@sora/e2ee": "workspace:^",
+    "fflate": "0.8.0"
+  }
+}

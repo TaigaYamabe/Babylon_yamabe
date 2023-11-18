@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sample Scene</title>
+    <style>
+        html, body {
+            overflow: hidden;
+            width   : 100%;
+            height  : 100%;
+            margin  : 0;
+            padding : 0;
+        }
+
+        #renderCanvas {
+            width   : 100%;
+            height  : 100%;
+            touch-action: none;
+        }
+    </style>
+</head>
+<body>
+<header id="header">
+    <!-- 
+    actionはindex.phpのWeb アクセス用 URL
+    -->
+    <input type="file" id="modelInput" accept=".glb, .gltf" />
+    <canvas id="renderCanvas"></canvas>
+    <!-- <form method="post" action="http://localhost/index2.php" enctype="multipart/form-data" id="form">
+        <input type="file" name="file2">
+        <button type="button" id="submit-button">3Dモデルアップロード</button> 
+    </form> -->
+</header>
+
+    <!-- Babylon.jsとSceneLoaderの読み込み-->
+    <script src="https://preview.babylonjs.com/babylon.js"></script>
+    <script src="https://preview.babylonjs.com/loaders/babylonjs.loaders.min.js"></script>
+    <!-- これから作成するscript.jsの読み込み-->
+    <script src=js/sample.js></script>
+</body>
+</html>

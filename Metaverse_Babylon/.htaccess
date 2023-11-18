@@ -1,0 +1,4 @@
+#HTMLファイルでPHPを動かす
+ <FilesMatch "\.html$">
+AddHandler php8-script .html
+ </FilesMatch>
