@@ -6,7 +6,7 @@
     <title>Sample Scene</title>
     <style>
         html, body {
-            overflow: hidden;
+            overflow: scroll;
             width   : 100%;
             height  : 100%;
             margin  : 0;
@@ -14,7 +14,7 @@
         }
 
         #renderCanvas {
-            overflow: hidden;
+            overflow: scroll;
             width   : 100%;
             height  : 100%;
             touch-action: none;
@@ -80,7 +80,6 @@
     <script src="https://preview.babylonjs.com/babylon.js"></script>
     <script src="https://preview.babylonjs.com/loaders/babylonjs.loaders.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
     <!-- これから作成するscript.jsの読み込み-->
  
     <?php
@@ -118,6 +117,7 @@ if (($handle = fopen($csvFilePath2, "r")) !== FALSE) {
 var jsArray1 = <?php echo json_encode($phpArray1); ?>;
 var jsArray2 = <?php echo json_encode($phpArray2); ?>;
 </script>
-    <script type="text/javascript" src=js/script.js></script>
+    <!-- <script type="text/javascript" src=js/script.js></script> -->
+    <script type="text/javascript" src=js/webxr.js></script>
 </body>
 </html>

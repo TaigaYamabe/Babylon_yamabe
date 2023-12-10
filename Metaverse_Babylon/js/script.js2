@@ -1,11 +1,15 @@
 //function main() {
-    const canvas = document.getElementById("renderCanvas");
-    const engine = new BABYLON.Engine(canvas);
+    // const canvas = document.getElementById("renderCanvas");
+    // const engine = new BABYLON.Engine(canvas);
   
     //var pos =new BABYLON.Vector3(1, 0, 0);
     // console.log(pos.x)
     // function createScene() {
     const createScene = async function() {
+      const canvas = document.getElementById("renderCanvas");
+      const engine = new BABYLON.Engine(canvas);
+    
+      
       //console.log(pos);
       // 新しいシーンオブジェクトを作成
       const scene = new BABYLON.Scene(engine);
@@ -22,8 +26,6 @@
       for(var n =1; n<jsArray2[0].length; n++){
           csvArray[0].push(jsArray2[0][n]);
       }
-
-      //let hamburger = "<?php echo $php_string; ?>";
       
       //キー入力を受け付ける宣言
       //キー入力があるたびに、map変数の値がセットされる
@@ -284,37 +286,36 @@ document.addEventListener("keydown", function (event) {
   }
 });
 
-        const ground = BABYLON.MeshBuilder.CreateGround("ground", {width: 4, height: 4});
-        const xr = scene.createDefaultXRExperienceAsync({
-          //xrInput: defaultXRExperience.input,
-          floorMeshes: [ground]
+        // const ground = BABYLON.MeshBuilder.CreateGround("ground", {width: 4, height: 4});
+        // const xr = scene.createDefaultXRExperienceAsync({
+        // floorMeshes: [ground]
+        // });
+        // return xr.then((xrExperience) => {
+        //   console.log("Done, WebXR is enabled.");
+        //   //const xrCamera = xr.xrExperience.camera;
+        //   //webxr.setTransformationFromNonVRCamera(camera);
+        //   return scene;
+        // });
+        var xr = await scene.createDefaultXRExperienceAsync({
+          //  xrInput: defaultXRExperience.input,
+            //floorMeshes: [environment.ground] /* Array of meshes to be used as landing points */
         });
-        return xr.then((xrExperience) => {
-          console.log("Done, WebXR is enabled.");
-          //xr.baseExperience.set(0, 2, 10);
-          //const xrCamera = xr.xrExperience.camera;
-          //webxr.setTransformationFromNonVRCamera(camera);
-          return scene;
-        });
-      //   var xr = await scene.createDefaultXRExperienceAsync({
-      //     //  xrInput: defaultXRExperience.input,
-      //       //floorMeshes: [environment.ground] /* Array of meshes to be used as landing points */
-      //   });
-      //   xr.baseExperience.onStateChangedObservable.add((state)=>{
-      //     if(state === BABYLON.WebXRState.IN_XR){
+        xr.baseExperience.onStateChangedObservable.add((state)=>{
+          if(state === BABYLON.WebXRState.IN_XR){
   
-      //         console.log('WebXR camera position(before_enteringVR): '+xr.baseExperience.camera.position);
-      //         xr.baseExperience.camera.position.set(0, 2, 10);
-      //          console.log('WebXR camera position(after_enteringVR): '+xr.baseExperience.camera.position);
+              console.log('WebXR camera position(before_enteringVR): '+xr.baseExperience.camera.position);
+              xr.baseExperience.camera.position.set(0, 2, 10);
+               console.log('WebXR camera position(after_enteringVR): '+xr.baseExperience.camera.position);
              
-      //     }        
-      // });
-      // return scene;
+          }        
+      });
+      return scene;
+      
     }
   
-    createScene().then(sceneToRender => {
-      engine.runRenderLoop(() => sceneToRender.render());
-  });
+  //   createScene().then(sceneToRender => {
+  //     engine.runRenderLoop(() => sceneToRender.render());
+  // });
     // engine.runRenderLoop(() => {
     //   scene.render();
     // });
