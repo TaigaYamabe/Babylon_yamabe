@@ -11,8 +11,8 @@
       const scene = new BABYLON.Scene(engine);
 
       //scene.debugLayer.show();
-      //var obj ={};
-      var obj =BABYLON.MeshBuilder.CreateBox("cube", { size: 1 }, scene);
+      //var pickedMesh={};
+      var pickedMesh=BABYLON.MeshBuilder.CreateBox("cube", { size: 1 }, scene);
       obj.dispose()
 
       var obj_mat ={};
@@ -133,7 +133,7 @@
         //loadedMeshes[i][0].name="object"
         loadedMeshes[i][0].scaling = new BABYLON.Vector3(-10, 10, 10);
         loadedMeshes[i][0].position = new BABYLON.Vector3(0, 20, 0);
-        //obj = loadedMeshes[i][0];
+        //pickedMesh= loadedMeshes[i][0];
       }
       }
       for(var m =0; m<scene.meshes.length; m++){
@@ -194,7 +194,7 @@
       // もしクリックが壁にhitした場合、ぶつかった画像の位置を更新する
       if(pickResult.pickedMesh.name != "space"){
         if (pickResult.hit) {
-          obj =pickResult.pickedMesh;
+          pickedMesh=pickResult.pickedMesh;
           obj_mat = obj.material;
         }
       }
@@ -203,7 +203,7 @@
         if(obj.name != "space"){
         //"a"または"A"を押し続けている間、if文を実行
         if((map["a"] || map["A"])){
-          if(obj != null){
+          if(pickedMesh!= null){
            obj.translate(BABYLON.Axis.X, -2*distance, BABYLON.Space.WORLD);
           }
         }

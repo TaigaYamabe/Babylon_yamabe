@@ -127,7 +127,7 @@ window.addEventListener("DOMContentLoaded", main);
 //       // BABYLON.SceneLoader.ImportMeshAsync("a", "./Models/", "upload.glb")
 //       // .then((result) => {
 //       //   const glbMesh = result.meshes[1];
-//       //   obj = glbMesh;
+//       //   pickedMesh= glbMesh;
 //       //   obj_mat = glbMesh.material;
 //       //   // scene.addMesh(glbMesh);
 //       //   glbMesh.position = new BABYLON.Vector3(0, 20, 0);
@@ -141,7 +141,7 @@ window.addEventListener("DOMContentLoaded", main);
 //     //  //BABYLON.SceneLoader.LoadAssetContainer("./Models/", php, scene,
 //     //   function(container){
 //     //     const glbMesh = container.meshes[1];
-//     //     obj = glbMesh;
+//     //     pickedMesh= glbMesh;
 //     //     obj_mat = glbMesh.material;
 //     //     scene.addMesh(glbMesh);
 //     //     scene.addMaterial(glbMesh.material);
@@ -159,7 +159,7 @@ window.addEventListener("DOMContentLoaded", main);
 //         function () {
         
 //           const mesh = scene.meshes[0];
-//           obj = mesh;
+//           pickedMesh= mesh;
 //           obj_mat = mesh.material;
 //           mesh.position = pos.add(new BABYLON.Vector3(0, 20, 0));
 //           mesh.scaling = new BABYLON.Vector3(10, 10, 10);
@@ -208,7 +208,7 @@ window.addEventListener("DOMContentLoaded", main);
 //         if (pickResult.hit) {
 
 //           obj.material = obj_mat;
-//           obj =pickResult.pickedMesh;
+//           pickedMesh=pickResult.pickedMesh;
 //           obj_mat = obj.material;
 //           //pickResult.pickedMesh.scaling.y  += 1;
 //           //obj.material.specularColor = new BABYLON.Color3(1, 0, 0);
@@ -223,7 +223,7 @@ window.addEventListener("DOMContentLoaded", main);
 //       }
 //       //キーボード入力
 //       scene.registerAfterRender(function() {	
-//         if(obj != space){
+//         if(pickedMesh!= space){
 //         //"a"または"A"を押し続けている間、if文を実行
 //         if((map["a"] || map["A"])){
 //            obj.translate(BABYLON.Axis.X, -distance, BABYLON.Space.WORLD);
