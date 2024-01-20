@@ -2,7 +2,6 @@ const canvas = document.getElementById("renderCanvas");
 const engine = new BABYLON.Engine(canvas, true);
 
 var createScene = async function () {
-
 var scene = new BABYLON.Scene(engine);
 var non_vr_camera = new BABYLON.FreeCamera("camera", new BABYLON.Vector3(0, 2.5, 25), scene);
 non_vr_camera.rotation =new BABYLON.Vector3(0, Math.PI, 0);
@@ -154,7 +153,7 @@ plane2.parent =xr.baseExperience.camera;
 
 var plane3 = BABYLON.MeshBuilder.CreatePlane("plane3", { size: 5 }, scene);
 // テクスチャの作成と割り当て
-var texture = new BABYLON.Texture("./texture/拡大縮小.png", scene);
+var texture = new BABYLON.Texture("./texture/削除.jpeg", scene);
 var material = new BABYLON.StandardMaterial("material", scene);
 material.diffuseTexture = texture;
 plane3.material = material;
@@ -688,7 +687,7 @@ document.addEventListener("keydown", function (event) {
                  }
                  if(num == 3){
                   //pickedMesh.scaling = pickedMesh.scaling.scale(99/100);
-                  pickedMesh.scaling = pickedMesh.scaling.add(new BABYLON.Vector3(-axes.x/10, axes.x/10, axes.x/10));
+                  //pickedMesh.scaling = pickedMesh.scaling.add(new BABYLON.Vector3(-axes.x/10, axes.x/10, axes.x/10));
                  }
                  if(num == 4){
                   xr.baseExperience.camera.position.x -= (axes.x)/10;
@@ -703,10 +702,26 @@ document.addEventListener("keydown", function (event) {
                 pickedMesh.position.z += 0.03;
               }
               if(num == 2){
-                pickedMesh.rotation = pickedMesh.rotation.add(new BABYLON.Vector3(0, -0.01, 0));
+                //pickedMesh.rotation = pickedMesh.rotation.add(new BABYLON.Vector3(0, -0.01, 0));
+                pickedMesh.scaling = pickedMesh.scaling.scale(99/100);
               }
               if(num == 3){
-                pickedMesh.scaling = pickedMesh.scaling.scale(99/100);
+                if(pickedMesh.name !== "cube"){
+                  for(var m =0; m<scene.meshes.length; m++){
+                    if(scene.meshes[m].isVisible == false){
+                      for(var n =0; n<csvArray[0].length; n++){
+                        if(csvArray[0][n] === scene.meshes[m].name){
+                          break;
+                        }
+                        if(n == csvArray[0].length-1 && csvArray[0][n] !== scene.meshes[m].name){
+                          csvArray[0].push(scene.meshes[m].name);
+                        }
+                      }
+                    }
+                }
+                }
+                hideAllChildren(pickedMesh);
+                //pickedMesh.scaling = pickedMesh.scaling.scale(99/100);
                 //pickedMesh.scaling = pickedMesh.scaling.add(new BABYLON.Vector3(-0.01, -0.01, -0.01));
               }
               if(num == 4){
@@ -731,10 +746,11 @@ document.addEventListener("keydown", function (event) {
                 pickedMesh.position.z -= 0.03;
               }
               if(num == 2){
-                pickedMesh.rotation = pickedMesh.rotation.add(new BABYLON.Vector3(0, 0.01, 0));
+                //pickedMesh.rotation = pickedMesh.rotation.add(new BABYLON.Vector3(0, 0.01, 0));
+                pickedMesh.scaling = pickedMesh.scaling.scale(100/99);
               }
               if(num == 3){
-                pickedMesh.scaling = pickedMesh.scaling.scale(100/99);
+                //pickedMesh.scaling = pickedMesh.scaling.scale(100/99);
                 //pickedMesh.scaling = pickedMesh.scaling.add(new BABYLON.Vector3(0.01, 0.01, 0.01));
               }
               if(num == 4){
