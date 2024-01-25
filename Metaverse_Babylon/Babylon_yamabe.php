@@ -79,6 +79,7 @@
     <!-- Babylon.jsとSceneLoaderの読み込み-->
     <script src="https://preview.babylonjs.com/babylon.js"></script>
     <script src="https://preview.babylonjs.com/loaders/babylonjs.loaders.min.js"></script>
+    <script src="https://cdn.babylonjs.com/gui/babylon.gui.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <!-- これから作成するscript.jsの読み込み-->
  

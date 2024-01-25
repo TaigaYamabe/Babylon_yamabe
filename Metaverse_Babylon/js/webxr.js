@@ -1,6 +1,16 @@
 const canvas = document.getElementById("renderCanvas");
 const engine = new BABYLON.Engine(canvas, true);
+var HOST_ENDPOINT = "wss://economic-unleashed-citrine.glitch.me";
+var ROOM_NAME = "my_room";
 
+// Load Colyseus SDK (asynchronously)
+var scriptUrl = "https://unpkg.com/colyseus.js@^0.15.0-preview.2/dist/colyseus.js";
+var externalScript = document.createElement("script");
+externalScript.src = scriptUrl;
+document.head.appendChild(externalScript);
+
+var loadingText = new BABYLON.GUI.TextBlock("instructions");
+var id_text= new BABYLON.GUI.TextBlock("instructions");
 var createScene = async function () {
 var scene = new BABYLON.Scene(engine);
 var non_vr_camera = new BABYLON.FreeCamera("camera", new BABYLON.Vector3(0, 2.5, 25), scene);
@@ -428,8 +438,8 @@ const light = new BABYLON.HemisphericLight("HemiLight", new BABYLON.Vector3(0, 1
 //   if (scene.isReady()) {
 //   }
 // });
-
-scene.registerAfterRender(function() {	
+scene.registerBeforeRender(function() {	
+//scene.registerAfterRender(function() {	
 //   if (scene.isReady()) {
 //     scene.getMaterialByName("videoMaterial").getTexture().video.play();
 // }
@@ -842,12 +852,188 @@ document.addEventListener("keydown", function (event) {
     })
 
   });
+  // Display "loading" text
+  var advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
+
+  loadingText.text = "Loading the Colyseus SDK file...";
+  loadingText.color = "#fff000";
+  loadingText.fontFamily = "Roboto";
+  loadingText.fontSize = 30;
+  loadingText.textHorizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_CENTER;
+  loadingText.textVerticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_BOTTOM;
+  loadingText.paddingBottom = "5px";
+  advancedTexture.addControl(loadingText);
+
+  id_text.text = `ID - ...`;
+  id_text.color = "#fff000";
+  id_text.fontSize = 30;
+// テキストの位置設定（左上）
+  id_text.textHorizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
+  id_text.textVerticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
+  advancedTexture.addControl(id_text);
+
+  // build scene only after Colyseus SDK script is loaded.
+  externalScript.onload = function() {
+      // build the final scene
+      buildScene(scene);
+  };
 return scene;
+};
+var buildScene = async function (scene) {
+  var colyseusSDK = new Colyseus.Client(HOST_ENDPOINT);
+  loadingText.text = "Connecting with the server, please wait...";
+  var sphere=BABYLON.MeshBuilder.CreateBox("cube", { size: 1 }, scene);
+  sphere.name = "startsphere";
+  sphere.dispose();;
+  //
+  // Connect with Colyseus server
+  //
+  var room = await colyseusSDK.joinOrCreate(ROOM_NAME);
+  loadingText.text = `Connection established!-${ROOM_NAME}`;
+  id_text.text = `ID-${room.sessionId}`;
+  // Local entity map
+  var playerEntities = {};
+  var playerNextPosition = {};
+  var sphereEntities = {};
+  //var mainCamera = {};
+  var textPosition = {};
+  var camera_id = {};
+
+  // 
+  // schema callback: on player add
+  // 
+  room.state.players.onAdd((player, sessionId) => {
+      var isCurrentPlayer = (sessionId === room.sessionId);
+
+
+      camera_id = new BABYLON.FreeCamera(`camera-${sessionId}`, new BABYLON.Vector3(0, 2.5, 25), scene);
+      //var camera_id = new BABYLON.FreeCamera(`camera-${sessionId}`, Math.PI / 2, 1.0, 550, scene);
+      camera_id.rotation =new BABYLON.Vector3(0, Math.PI, 0);
+      var advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
+      var text = new BABYLON.GUI.TextBlock();
+      text.text = `${sessionId}`;
+      advancedTexture.addControl(text);
+      text.linkWithMesh(camera_id);
+      text.linkOffsetY = -20;
+
+
+      // var camera_id = new BABYLON.FreeCamera(`camera-${sessionId}`, new BABYLON.Vector3(0, 100, 10), scene);
+      // //var camera_id = new BABYLON.FreeCamera(`camera-${sessionId}`, Math.PI / 2, 1.0, 550, scene);
+      // camera_id.rotation =new BABYLON.Vector3(Math.PI/2, Math.PI/2, 0);
+      camera_id.attachControl(canvas, true);
+      scene.addCamera(camera_id);
+      if(sessionId === room.sessionId){
+        scene.activeCamera = camera_id;
+      }
+      //scene.activeCamera = camera;
+      camera_id.position.set(player.x, player.y, player.z);
+      // Set player mesh properties
+      sphere = BABYLON.MeshBuilder.CreateSphere(`player-${sessionId}`, {
+        segments: 8,
+        diameter: 1
+      });
+      sphere.material = new BABYLON.StandardMaterial(`playerMat-${sessionId}`);
+      sphere.material.emissiveColor = (isCurrentPlayer) ? BABYLON.Color3.Yellow() : BABYLON.Color3.Gray();
+      sphere.position = camera_id.position;
+
+      // Set player spawning position
+
+      playerEntities[sessionId] = camera_id;
+      playerNextPosition[sessionId] = camera_id.position.clone();
+      sphereEntities[sessionId] = sphere;
+      textPosition[sessionId] = text;
+
+      // listen for individual player changes
+      player.onChange(() => {
+          playerNextPosition[sessionId].set(player.x, player.y, player.z);
+      });
+  });
+
+  // 
+  // schema callback: on player remove
+  // 
+  room.state.players.onRemove((player, sessionId) => {
+      playerEntities[sessionId].dispose();
+      //mainCamera[sessionId].dispose();
+      textPosition[sessionId].dispose();
+      delete playerEntities[sessionId];
+      delete playerNextPosition[sessionId];
+      //delete mainCamera[sessionId];
+      delete textPosition[sessionId];
+  });
+
+  // on room disconnection
+  room.onLeave(code => {
+      loadingText.text = "Disconnected from the room.";
+  });
+
+  // Add click event handler to move current player
+  // scene.onPointerDown = (event, pointer) => {
+  //     if (event.button == 0) {
+  //         var targetPosition = pointer.pickedPoint.clone();
+
+  //         // Position adjustments for the current play ground.
+  //         targetPosition.y = -1;
+  //         if (targetPosition.x > 245) targetPosition.x = 245;
+  //         else if (targetPosition.x < -245) targetPosition.x = -245;
+  //         if (targetPosition.z > 245) targetPosition.z = 245;
+  //         else if (targetPosition.z < -245) targetPosition.z = -245;
+
+  //         // set current player's next position immediatelly
+  //         playerNextPosition[room.sessionId] = targetPosition;
+
+  //         // Send position update to the server
+  //         room.send("updatePosition", {
+  //             x: targetPosition.x,
+  //             y: targetPosition.y,
+  //             z: targetPosition.z,
+  //         });
+  //     }
+  // };
+
+  //
+  // Smooth player positions using lerp
+  // https://doc.babylonjs.com/typedoc/classes/babylon.scalar#lerp
+  //
+
+
+  //window.addEventListener("keydown", function (event) {
+  scene.registerBeforeRender(function() {	
+    //var targetPosition = pointer.pickedPoint.clone();
+    var SphereByName = scene.getMeshByName(`player-${room.sessionId}`);
+    var objectByName = scene.getCameraByName(`camera-${room.sessionId}`);
+    if (objectByName) {
+        //var objectByName = scene.getCameraByName(`camera-${room.sessionId}`);
+        //objectByName.position = camera_id.position;
+        SphereByName.position = objectByName.position;
+        var targetPosition = objectByName.position;
+        console.log(objectByName.position)
+      //var targetPosition = objectByName.position;
+          // set current player's next position immediatelly
+          playerNextPosition[room.sessionId] = targetPosition;
+
+          // Send position update to the server
+          room.send("updatePosition", {
+              x: targetPosition.x,
+              y: targetPosition.y,
+              z: targetPosition.z,
+          });
+          //console.log('colyseus');
+
+      for (let sessionId in playerEntities) {
+          var entity = playerEntities[sessionId];
+          var sphereentity = sphereEntities[sessionId];
+          var targetPosition = playerNextPosition[sessionId];
+          entity.position = BABYLON.Vector3.Lerp(entity.position, targetPosition, 0.05);
+          sphereentity.position = entity.position;
+      }
+    }
+  })
 };
 
 createScene().then(sceneToRender => {
-    engine.runRenderLoop(() => sceneToRender.render());
+  engine.runRenderLoop(() => sceneToRender.render());
 });
 window.addEventListener("resize", () => {
-    engine.resize();
-  });
+  engine.resize();
+});
