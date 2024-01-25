@@ -285,7 +285,7 @@ const light = new BABYLON.HemisphericLight("HemiLight", new BABYLON.Vector3(0, 1
   BABYLON.SceneLoader.ImportMesh("","./Models/","classroom_window.glb", scene, 
     //BABYLON.SceneLoader.ImportMesh("","./Models/", "lab.glb", scene, 
     function (meshes) {
-      console.log(meshes.length);
+      //console.log(meshes.length);
       for(var i =0; i<meshes.length; i++){
         meshes[i].name = "space";
       }
@@ -325,6 +325,7 @@ const light = new BABYLON.HemisphericLight("HemiLight", new BABYLON.Vector3(0, 1
     // メッシュを特定の順序でシーンに追加
     // 例: i番目の.glbファイルのメッシュを最初に追加
     console.log(loadPromises.length);
+    console.log(loadedMeshes);
     for(var i =0; i<loadPromises.length; i++){
     //scene.addMesh(loadedMeshes[i][0]);
     if(loadedMeshes[i][0].name=="space"){
@@ -541,16 +542,6 @@ document.addEventListener("keydown", function (event) {
         } else {
           scene.debugLayer.show();
         }
-    }
-    if (event.key === "z") {
-      console.log("エクスポート中");
-      var glbFileName = "scene.glb";
-      var options = {
-        shouldExportNode: function (node) { return true; }
-      };
-      BABYLON.SceneSerializer.Serialize(scene, null, glbFileName, engine, function () {
-      console.log("エクスポートが完了しました: " + glbFileName);
-    });
     }
   });
 
@@ -882,9 +873,10 @@ return scene;
 var buildScene = async function (scene) {
   var colyseusSDK = new Colyseus.Client(HOST_ENDPOINT);
   loadingText.text = "Connecting with the server, please wait...";
-  var sphere=BABYLON.MeshBuilder.CreateBox("cube", { size: 1 }, scene);
-  sphere.name = "startsphere";
-  sphere.dispose();;
+  var sphere={};
+  // var sphere=BABYLON.MeshBuilder.CreateBox("cube", { size: 1 }, scene);
+  // sphere.name = "startsphere";
+  // sphere.dispose();;
   //
   // Connect with Colyseus server
   //
@@ -915,11 +907,19 @@ var buildScene = async function (scene) {
       camera_id.rotation =new BABYLON.Vector3(0, Math.PI, 0);
       var advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
       var text = new BABYLON.GUI.TextBlock();
+      text.color = getRandomColor(); // ランダムな色を設定
       text.text = `${sessionId}`;
       advancedTexture.addControl(text);
       text.linkWithMesh(camera_id);
       text.linkOffsetY = -20;
-
+      function getRandomColor() {
+        var letters = "0123456789ABCDEF";
+        var color = "#";
+        for (var i = 0; i < 6; i++) {
+            color += letters[Math.floor(Math.random() * 16)];
+        }
+        return color;
+      }
 
       // var camera_id = new BABYLON.FreeCamera(`camera-${sessionId}`, new BABYLON.Vector3(0, 100, 10), scene);
       // //var camera_id = new BABYLON.FreeCamera(`camera-${sessionId}`, Math.PI / 2, 1.0, 550, scene);
@@ -937,17 +937,41 @@ var buildScene = async function (scene) {
       //   segments: 8,
       //   diameter: 1
       // });
-      sphere = BABYLON.MeshBuilder.CreateBox(`player-${sessionId}`, { size: 1 }, scene);
-      sphere.material = new BABYLON.StandardMaterial(`playerMat-${sessionId}`);
-      sphere.material.emissiveColor = (isCurrentPlayer) ? BABYLON.Color3.Yellow() : BABYLON.Color3.Gray();
-      sphere.position = camera_id.position;
+      BABYLON.SceneLoader.ImportMesh("","./Models/","player_camera.glb", scene, 
+      //BABYLON.SceneLoader.ImportMesh("","./Models/", "lab.glb", scene, 
+      function (meshes) {
+        //console.log(meshes.length);
+        for(var i =1; i<meshes.length; i++){
+          meshes[i].name = "room";
+          meshes[i].visibility =0.5;
+        }
+        // const mesh = meshes[0];
+        // mesh.name = `player-${sessionId}`;
+        sphere = meshes[0];
+        sphere.name = `player-${sessionId}`;
+        sphere.scaling = new BABYLON.Vector3(0.5, 0.5, 0.5);
+        //sphere.material.alpha =0.5;
+        sphere.position = camera_id.position;
+        sphere.rotation = camera_id.rotation;
+        sphereEntities[sessionId] = sphere;
+      },
+      );
+      // sphere = BABYLON.MeshBuilder.CreateBox(`player-${sessionId}`, { size: 1 }, scene);
+      // sphere.material = new BABYLON.StandardMaterial(`playerMat-${sessionId}`);
+      //sphere.material.emissiveColor = (isCurrentPlayer) ? BABYLON.Color3.Yellow() : BABYLON.Color3.Gray();
+      // if(sphere){
+      //   sphere.scaling = new BABYLON.Vector3(0.5, 0.5, 0.5);
+      //   sphere.position = camera_id.position;
+      //   sphere.rotation = camera_id.rotation;
+      //   sphereEntities[sessionId] = sphere;
+      // }
 
       // Set player spawning position
 
       playerEntities[sessionId] = camera_id;
       playerNextPosition[sessionId] = camera_id.position.clone();
       playerNextRotation[sessionId] = camera_id.rotation.clone();
-      sphereEntities[sessionId] = sphere;
+      //sphereEntities[sessionId] = sphere;
       textPosition[sessionId] = text;
 
       // listen for individual player changes
@@ -962,10 +986,12 @@ var buildScene = async function (scene) {
   // 
   room.state.players.onRemove((player, sessionId) => {
       playerEntities[sessionId].dispose();
+      sphereEntities[sessionId].dispose();
       //mainCamera[sessionId].dispose();
       textPosition[sessionId].dispose();
       delete playerEntities[sessionId];
       delete playerNextPosition[sessionId];
+      delete sphereEntities[sessionId];
       //delete mainCamera[sessionId];
       delete textPosition[sessionId];
   });
@@ -1010,11 +1036,13 @@ var buildScene = async function (scene) {
     //var targetPosition = pointer.pickedPoint.clone();
     var SphereByName = scene.getMeshByName(`player-${room.sessionId}`);
     var objectByName = scene.getCameraByName(`camera-${room.sessionId}`);
-    if (objectByName) {
+    if (objectByName && SphereByName) {
         //var objectByName = scene.getCameraByName(`camera-${room.sessionId}`);
         //objectByName.position = camera_id.position;
         SphereByName.position = objectByName.position;
         SphereByName.rotation = objectByName.rotation;
+        SphereByName.scaling = new BABYLON.Vector3(0.3, 0.3, 0.3);
+        //SphereByName.material.alpha =0.5;
         var targetPosition = objectByName.position;
         var targetRotation = objectByName.rotation;
         //console.log(objectByName.position)
@@ -1042,6 +1070,7 @@ var buildScene = async function (scene) {
           entity.rotation = BABYLON.Vector3.Lerp(entity.rotation, targetRotation, 0.5);
           sphereentity.position = entity.position;
           sphereentity.rotation = entity.rotation;
+          //sphereentity.scaling = new BABYLON.Vector3(0.3, 0.3, 0.3);
       }
     }
   })
