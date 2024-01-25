@@ -894,10 +894,14 @@ var buildScene = async function (scene) {
   // Local entity map
   var playerEntities = {};
   var playerNextPosition = {};
+  var playerNextRotation = {};
   var sphereEntities = {};
   //var mainCamera = {};
   var textPosition = {};
   var camera_id = {};
+
+  var modelEntities = {};
+  var modelNextPosition = {};
 
   // 
   // schema callback: on player add
@@ -927,11 +931,13 @@ var buildScene = async function (scene) {
       }
       //scene.activeCamera = camera;
       camera_id.position.set(player.x, player.y, player.z);
+      camera_id.rotation.set(player.a, player.b, player.c);
       // Set player mesh properties
-      sphere = BABYLON.MeshBuilder.CreateSphere(`player-${sessionId}`, {
-        segments: 8,
-        diameter: 1
-      });
+      // sphere = BABYLON.MeshBuilder.CreateSphere(`player-${sessionId}`, {
+      //   segments: 8,
+      //   diameter: 1
+      // });
+      sphere = BABYLON.MeshBuilder.CreateBox(`player-${sessionId}`, { size: 1 }, scene);
       sphere.material = new BABYLON.StandardMaterial(`playerMat-${sessionId}`);
       sphere.material.emissiveColor = (isCurrentPlayer) ? BABYLON.Color3.Yellow() : BABYLON.Color3.Gray();
       sphere.position = camera_id.position;
@@ -940,12 +946,14 @@ var buildScene = async function (scene) {
 
       playerEntities[sessionId] = camera_id;
       playerNextPosition[sessionId] = camera_id.position.clone();
+      playerNextRotation[sessionId] = camera_id.rotation.clone();
       sphereEntities[sessionId] = sphere;
       textPosition[sessionId] = text;
 
       // listen for individual player changes
       player.onChange(() => {
           playerNextPosition[sessionId].set(player.x, player.y, player.z);
+          playerNextRotation[sessionId].set(player.a, player.b, player.c);
       });
   });
 
@@ -1006,17 +1014,22 @@ var buildScene = async function (scene) {
         //var objectByName = scene.getCameraByName(`camera-${room.sessionId}`);
         //objectByName.position = camera_id.position;
         SphereByName.position = objectByName.position;
+        SphereByName.rotation = objectByName.rotation;
         var targetPosition = objectByName.position;
-        console.log(objectByName.position)
+        var targetRotation = objectByName.rotation;
+        //console.log(objectByName.position)
       //var targetPosition = objectByName.position;
           // set current player's next position immediatelly
           playerNextPosition[room.sessionId] = targetPosition;
-
+          playerNextRotation[room.sessionId] = targetRotation;
           // Send position update to the server
           room.send("updatePosition", {
               x: targetPosition.x,
               y: targetPosition.y,
               z: targetPosition.z,
+              a: targetRotation.x,
+              b: targetRotation.y,
+              c: targetRotation.z,
           });
           //console.log('colyseus');
 
@@ -1024,8 +1037,11 @@ var buildScene = async function (scene) {
           var entity = playerEntities[sessionId];
           var sphereentity = sphereEntities[sessionId];
           var targetPosition = playerNextPosition[sessionId];
-          entity.position = BABYLON.Vector3.Lerp(entity.position, targetPosition, 0.05);
+          var targetRotation = playerNextRotation[sessionId];
+          entity.position = BABYLON.Vector3.Lerp(entity.position, targetPosition, 0.5);
+          entity.rotation = BABYLON.Vector3.Lerp(entity.rotation, targetRotation, 0.5);
           sphereentity.position = entity.position;
+          sphereentity.rotation = entity.rotation;
       }
     }
   })
