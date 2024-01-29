@@ -116,7 +116,7 @@ xr.baseExperience.onStateChangedObservable.add((state)=>{
 // plane.scaling = new BABYLON.Vector3(10, 5, 1)
 var plane = BABYLON.MeshBuilder.CreatePlane("space", { size: 5 }, scene);
 // テクスチャの作成と割り当て
-var texture = new BABYLON.Texture("./texture/メタバース教室.png", scene);
+var texture = new BABYLON.Texture("./Metaverse_Babylon/texture/メタバース教室.png", scene);
 var material = new BABYLON.StandardMaterial("material", scene);
 material.diffuseTexture = texture;
 plane.material = material;
@@ -125,7 +125,7 @@ plane.scaling = new BABYLON.Vector3(4.0, 2.2, 1);
 plane.rotation =new BABYLON.Vector3(0, Math.PI, 0);
 
 // 動画のテクスチャを作成
-var videoTexture = new BABYLON.VideoTexture("video", ["./movie/授業サンプル.mp4"], scene, true);
+var videoTexture = new BABYLON.VideoTexture("video", ["./Metaverse_Babylon/movie/授業サンプル.mp4"], scene, true);
 var screen = BABYLON.MeshBuilder.CreatePlane("space", { size: 5 }, scene);
 var material = new BABYLON.StandardMaterial("videoMaterial", scene);
 material.diffuseTexture = videoTexture;
@@ -139,7 +139,7 @@ screen.rotation =new BABYLON.Vector3(0, Math.PI, 0);
 
 var plane1 = BABYLON.MeshBuilder.CreatePlane("plane1", { size: 5 }, scene);
 // テクスチャの作成と割り当て
-var texture = new BABYLON.Texture("./texture/移動.png", scene);
+var texture = new BABYLON.Texture("./Metaverse_Babylon/texture/移動.png", scene);
 var material = new BABYLON.StandardMaterial("material", scene);
 material.diffuseTexture = texture;
 plane1.material = material;
@@ -154,7 +154,7 @@ plane1.parent =xr.baseExperience.camera;
 
 var plane2 = BABYLON.MeshBuilder.CreatePlane("plane2", { size: 5 }, scene);
 // テクスチャの作成と割り当て
-var texture = new BABYLON.Texture("./texture/回転.png", scene);
+var texture = new BABYLON.Texture("./Metaverse_Babylon/texture/回転.png", scene);
 var material = new BABYLON.StandardMaterial("material", scene);
 material.diffuseTexture = texture;
 plane2.material = material;
@@ -169,7 +169,7 @@ plane2.parent =xr.baseExperience.camera;
 
 var plane3 = BABYLON.MeshBuilder.CreatePlane("plane3", { size: 5 }, scene);
 // テクスチャの作成と割り当て
-var texture = new BABYLON.Texture("./texture/削除.jpeg", scene);
+var texture = new BABYLON.Texture("./Metaverse_Babylon/texture/削除.jpeg", scene);
 var material = new BABYLON.StandardMaterial("material", scene);
 material.diffuseTexture = texture;
 plane3.material = material;
@@ -184,7 +184,7 @@ plane3.parent =xr.baseExperience.camera;
 
 var plane4 = BABYLON.MeshBuilder.CreatePlane("plane4", { size: 5 }, scene);
 // テクスチャの作成と割り当て
-var texture = new BABYLON.Texture("./texture/カメラ.jpg", scene);
+var texture = new BABYLON.Texture("./Metaverse_Babylon/texture/カメラ.jpg", scene);
 var material = new BABYLON.StandardMaterial("material", scene);
 material.diffuseTexture = texture;
 plane4.material = material;
@@ -244,7 +244,7 @@ const light = new BABYLON.HemisphericLight("HemiLight", new BABYLON.Vector3(0, 1
  //背景画像-----------------------------------------------------------------------------------
  var dome = new BABYLON.PhotoDome(
     "space",
-    "./texture/green.jpeg",
+    "./Metaverse_Babylon/texture/green.jpeg",
     {
         resolution: 32,
         size: 1000
@@ -292,7 +292,7 @@ childMeshes.forEach(function(childMesh) {
     // var Box_Right_ThumbStick = BABYLON.MeshBuilder.CreateBox("Box_Right_ThumbStick",{size:0.5},scene);
     // Box_Right_ThumbStick.position = new BABYLON.Vector3(1,10,1);
 
-  BABYLON.SceneLoader.ImportMesh("","./Models/","classroom_window.glb", scene, 
+  BABYLON.SceneLoader.ImportMesh("","./Metaverse_Babylon/Models/","classroom_window.glb", scene, 
     //BABYLON.SceneLoader.ImportMesh("","./Models/", "lab.glb", scene, 
     function (meshes) {
       //console.log(meshes.length);
@@ -330,7 +330,7 @@ childMeshes.forEach(function(childMesh) {
   }
   var loadPromises = [];
   for(var i =0; i<jsArray1.length; i++){
-    loadPromises.push(loadAndAddMeshes("./Models/",jsArray1[i][0], jsArray1[i][1],scene));
+    loadPromises.push(loadAndAddMeshes("./Metaverse_Babylon/Models/",jsArray1[i][0], jsArray1[i][1],scene));
   }
   Promise.all(loadPromises).then(function () {
     // メッシュを特定の順序でシーンに追加
@@ -974,7 +974,7 @@ var buildScene = async function (scene) {
       //   segments: 8,
       //   diameter: 1
       // });
-      BABYLON.SceneLoader.ImportMesh("","./Models/","player_camera.glb", scene, 
+      BABYLON.SceneLoader.ImportMesh("","./Metaverse_Babylon/Models/","player_camera.glb", scene, 
       //BABYLON.SceneLoader.ImportMesh("","./Models/", "lab.glb", scene, 
       function (meshes) {
         //console.log(meshes.length);
