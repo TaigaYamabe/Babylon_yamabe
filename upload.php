@@ -7,7 +7,7 @@
 <p><?php
 // ファイルへのパス
 date_default_timezone_set('Asia/Tokyo');
-$path = './Models/';
+$path = './Metaverse_Babylon/Models/';
 // ファイルがアップロードされているかと、POST通信でアップロードされたかを確認
 if( !empty($_FILES['file1']['tmp_name']) && is_uploaded_file($_FILES['file1']['tmp_name']) ) {
 	// ファイルを指定したパスへ保存する
@@ -16,7 +16,7 @@ if( !empty($_FILES['file1']['tmp_name']) && is_uploaded_file($_FILES['file1']['t
 	//if( move_uploaded_file( $_FILES['file1']['tmp_name'], $path."upload.glb") ) {
 	if( move_uploaded_file( $_FILES['file1']['tmp_name'], $path.$filename) ) {
 		echo 'アップロードされたファイルを保存しました。';
-		$csvpath = './csv/';
+		$csvpath = './Metaverse_Babylon/csv/';
 		// CSVファイルのパスを指定します
 		$csvFilePath = $csvpath.'filename.csv';
 		// CSVファイルを書き込みモードでオープンします
@@ -46,7 +46,7 @@ if( !empty($_FILES['file2']['tmp_name']) && is_uploaded_file($_FILES['file2']['t
 	$filename = date("YmdHis").$name;
 	if( move_uploaded_file( $_FILES['file2']['tmp_name'], $path.$filename) ) {
 		echo 'アップロードされたファイルを保存しました。';
-		$csvpath = './csv/';
+		$csvpath = './Metaverse_Babylon/csv/';
 		// CSVファイルのパスを指定します
 		$csvFilePath = $csvpath.'filename.csv';
 		// CSVファイルを書き込みモードでオープンします
@@ -73,7 +73,7 @@ if( !empty($_FILES['file2']['tmp_name']) && is_uploaded_file($_FILES['file2']['t
 }
 ?></p>
 <?php
-	header("Location:Babylon_yamabe.php");
+	header("Location:index.php");
 ?>
 </body>
 </html>

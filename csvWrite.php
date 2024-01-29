@@ -7,7 +7,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // ここで $jsArray を使用して PHP 処理を行う
 }
 
-$csvpath = './csv/';
+$csvpath = './Metaverse_Babylon/csv/';
 // CSVファイルのパスを指定します
 $csvFilePath = $csvpath.'csvArray.csv';
 // CSVファイルを書き込みモードでオープンします
@@ -40,5 +40,5 @@ foreach ($csvArray as $row) {
 fclose($fileHandle);
 ?>
 <?php
-	header("Location:Babylon_yamabe.php");
+	header("Location:index.php");
 ?>
