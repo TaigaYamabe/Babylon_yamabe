@@ -2,7 +2,13 @@ const canvas = document.getElementById("renderCanvas");
 const engine = new BABYLON.Engine(canvas, true);
 var HOST_ENDPOINT = "wss://economic-unleashed-citrine.glitch.me";
 var ROOM_NAME = "my_room";
-
+var targetPosition = {};
+var targetRotation = {};
+var pickedMesh={};
+var modelEntities = {};
+var modelNextPosition = {};
+var modelNextRotation = {};
+var modelNextScaling = {};
 // Load Colyseus SDK (asynchronously)
 var scriptUrl = "https://unpkg.com/colyseus.js@^0.15.0-preview.2/dist/colyseus.js";
 var externalScript = document.createElement("script");
@@ -199,13 +205,13 @@ plane4.setEnabled(false);
 // tmpRay.length = 10;
 var hit;
 var tmpMesh;
-var startCube=BABYLON.MeshBuilder.CreateBox("cube", { size: 1 }, scene);
-var pickedMesh=startCube;
-pickedMesh.setEnabled(false);
+// var startCube=BABYLON.MeshBuilder.CreateBox("cube", { size: 1 }, scene);
+// var pickedMesh=startCube;
+// pickedMesh.setEnabled(false);
 var pickedMesh_parent;
 var pickedMesh_pos;
 
-var pickedMesh=BABYLON.MeshBuilder.CreateBox("cube", { size: 1 }, scene);
+pickedMesh=BABYLON.MeshBuilder.CreateBox("cube", { size: 1 }, scene);
       pickedMesh.dispose();
 var obj_mat ={};
 var space ={};
@@ -237,7 +243,7 @@ const light = new BABYLON.HemisphericLight("HemiLight", new BABYLON.Vector3(0, 1
 
  //背景画像-----------------------------------------------------------------------------------
  var dome = new BABYLON.PhotoDome(
-    "testdome",
+    "space",
     "./texture/green.jpeg",
     {
         resolution: 32,
@@ -245,7 +251,11 @@ const light = new BABYLON.HemisphericLight("HemiLight", new BABYLON.Vector3(0, 1
     },
     scene
 );
-
+var childMeshes = dome.getChildMeshes();
+// 子メッシュの名前をコンソールに出力
+childMeshes.forEach(function(childMesh) {
+    childMesh.name = "space";
+});
 
   //-----------------------------------------------------------------------------------------
 
@@ -309,6 +319,7 @@ const light = new BABYLON.HemisphericLight("HemiLight", new BABYLON.Vector3(0, 1
             csvArray.push([newMeshes[0].name]);
             for(var n =1; n<newMeshes.length; n++){
             newMeshes[n].name =fileURL2 + n;
+            //newMeshes[n].scaling = BABYLON.Vector3(-1, 1, 1);
             csvArray.push([newMeshes[n].name]);
             }
           }
@@ -332,7 +343,7 @@ const light = new BABYLON.HemisphericLight("HemiLight", new BABYLON.Vector3(0, 1
       //if(k!=-1){loadedMeshes[k][1].dispose();}
       //k=i;
       //loadedMeshes[i][0].name = "space";
-      loadedMeshes[i][0].scaling = new BABYLON.Vector3(-10, 10, 10);
+      loadedMeshes[i][0].scaling = new BABYLON.Vector3(10, 10, 10);
       loadedMeshes[i][0].position = new BABYLON.Vector3(0, -5, 0);
       loadedMeshes[i][0].rotation = new BABYLON.Vector3(0, 0, 0);
     }else{
@@ -357,12 +368,15 @@ const light = new BABYLON.HemisphericLight("HemiLight", new BABYLON.Vector3(0, 1
        //console.log("バウンディングボックスの最大座標:", boundingInfo.boundingBox.maximumWorld);
       }
       // バウンディングボックスの寸法から正規化に必要なスケールを計算
-      loadedMeshes[i][0].scaling = new BABYLON.Vector3(-5/dimensions.length(), 5/ dimensions.length(), 5/ dimensions.length());
+      loadedMeshes[i][0].scaling = new BABYLON.Vector3(5/dimensions.length(), 5/ dimensions.length(), 5/ dimensions.length());
       //loadedMeshes[i][0].scaling = new BABYLON.Vector3(-1/(dimensions_max-dimensions_min), 1/ (dimensions_max-dimensions_min), 1/ (dimensions_max-dimensions_min));
       loadedMeshes[i][0].rotation = new BABYLON.Vector3(0, 0, 0);
       //loadedMeshes[i][0].scaling = new BABYLON.Vector3(-10, 10, 10);
       loadedMeshes[i][0].position = new BABYLON.Vector3(0, 0, 0);
       // //pickedMesh= loadedMeshes[i][0];
+      for(var j =1; j<loadedMeshes[i].length; j++){
+        loadedMeshes[i][j].scaling = new BABYLON.Vector3(-1, 1, 1);
+      }
     }
     for(var m =0; m<scene.meshes.length; m++){
       //scene.meshes[m].rotation = new BABYLON.Vector3(0, 0, 0);
@@ -392,8 +406,14 @@ const light = new BABYLON.HemisphericLight("HemiLight", new BABYLON.Vector3(0, 1
         }
       }
     }
+    for(var i =0; i<loadedMeshes.length; i++){
+      modelEntities[loadedMeshes[i][0].name] = loadedMeshes[i][0];
+      modelNextPosition[loadedMeshes[i][0].name] = loadedMeshes[i][0].position;
+      modelNextRotation[loadedMeshes[i][0].name] = loadedMeshes[i][0].rotation;
+      modelNextScaling[loadedMeshes[i][0].name] = loadedMeshes[i][0].scaling;
+    }
     
-    console.log(csvArray);
+    console.log(modelEntities);
     document.getElementById("csvArray").value = JSON.stringify(csvArray);
   });
   
@@ -470,31 +490,46 @@ if((map["ArrowLeft"])){
     xr.baseExperience.camera.position = xr.baseExperience.camera.position.add(new BABYLON.Vector3(0, 0, -distance));
 }
 if(pickedMesh.name != "space"){
+    var boundingBox_center = pickedMesh.getBoundingInfo().boundingBox.centerWorld;
+    // var boundingBox_dimensions = pickedMesh.getBoundingInfo().boundingBox.maximumWorld.subtract( pickedMesh.getBoundingInfo().boundingBox.minimumWorld);
+    // console.log(boundingBox_dimensions.length());
     //"a"または"A"を押し続けている間、if文を実行
     if((map["a"] || map["A"])){
       if(pickedMesh!= null){
-       pickedMesh.translate(BABYLON.Axis.X, 2*distance, BABYLON.Space.WORLD);
+        if(boundingBox_center.x <= 35){
+          pickedMesh.translate(BABYLON.Axis.X, 2*distance, BABYLON.Space.WORLD);
+        }
       }
     }
     //"d"または"D"を押し続けている間、if文を実行
     if((map["d"] || map["D"])){
+      if(boundingBox_center.x >= -35){
         pickedMesh.translate(BABYLON.Axis.X, -2*distance, BABYLON.Space.WORLD);
+      }
     }
     //"w"または"W"を押し続けている間、if文を実行
     if((map["w"] || map["W"])){
+      if(boundingBox_center.y <= 15){
         pickedMesh.translate(BABYLON.Axis.Y, 2*distance, BABYLON.Space.WORLD);
+      }
     }
     //"s"または"S"を押し続けている間、if文を実行
     if((map["s"] || map["S"])){
+      if(boundingBox_center.y >= -9){
         pickedMesh.translate(BABYLON.Axis.Y, -2*distance, BABYLON.Space.WORLD);
+      }
     }
     //"q"または"Q"を押し続けている間、if文を実行
     if((map["q"] || map["Q"])){
+      if(boundingBox_center.z >= -8){
       pickedMesh.translate(BABYLON.Axis.Z, -2*distance, BABYLON.Space.WORLD);
+      }
     }
     //"e"または"E"を押し続けている間、if文を実行
     if((map["e"] || map["E"])){
+      if(boundingBox_center.z <= 80){
       pickedMesh.translate(BABYLON.Axis.Z, 2*distance, BABYLON.Space.WORLD);
+      }
     }
     //"1"を押し続けている間、if文を実行
     if((map["1"])){
@@ -506,11 +541,11 @@ if(pickedMesh.name != "space"){
       //pickedMesh.rotate(BABYLON.Axis.X, distance/5, BABYLON.Space.WORLD);
     }
     if((map["3"])){
-      pickedMesh.scaling = pickedMesh.scaling.scale(100/99);
+      pickedMesh.scaling = pickedMesh.scaling.scale(1000/999);
       //pickedMesh.scaling = pickedMesh.scaling.add(new BABYLON.Vector3(-distance/2, distance/2, distance/2));
     }
     if((map["4"])){
-      pickedMesh.scaling = pickedMesh.scaling.scale(99/100);
+      pickedMesh.scaling = pickedMesh.scaling.scale(999/1000);
       //pickedMesh.scaling = pickedMesh.scaling.add(new BABYLON.Vector3(distance/2, -distance/2, -distance/2));
     }
     if((map["5"])){
@@ -892,14 +927,16 @@ var buildScene = async function (scene) {
   var textPosition = {};
   var camera_id = {};
 
-  var modelEntities = {};
-  var modelNextPosition = {};
+  // var modelEntities = {};
+  // var modelNextPosition = {};
+  // var modelNextRotation = {};
+  // var modelNextScaling = {};
 
   // 
   // schema callback: on player add
   // 
   room.state.players.onAdd((player, sessionId) => {
-      var isCurrentPlayer = (sessionId === room.sessionId);
+      //var isCurrentPlayer = (sessionId === room.sessionId);
 
 
       camera_id = new BABYLON.FreeCamera(`camera-${sessionId}`, new BABYLON.Vector3(0, 2.5, 25), scene);
@@ -974,10 +1011,26 @@ var buildScene = async function (scene) {
       //sphereEntities[sessionId] = sphere;
       textPosition[sessionId] = text;
 
+      if(pickedMesh.position && pickedMesh.rotation && pickedMesh.scaling){
+        modelNextPosition[pickedMesh.name] = pickedMesh.position;
+        modelNextRotation[pickedMesh.name] = pickedMesh.rotation;
+        modelNextScaling[pickedMesh.name] = pickedMesh.scaling;
+      }
+
+
       // listen for individual player changes
       player.onChange(() => {
           playerNextPosition[sessionId].set(player.x, player.y, player.z);
           playerNextRotation[sessionId].set(player.a, player.b, player.c);
+
+          //console.log(player);
+          if(modelNextPosition[player.name] && modelNextRotation[player.name] && modelNextScaling[player.name]){
+          modelNextPosition[player.name].set(player.posx, player.posy, player.posz);
+          modelNextRotation[player.name].set(player.rotx, player.roty, player.rotz);
+          modelNextScaling[player.name].set(player.scalx, player.scalx, player.scalx);
+          }
+
+
       });
   });
 
@@ -1030,7 +1083,6 @@ var buildScene = async function (scene) {
   // https://doc.babylonjs.com/typedoc/classes/babylon.scalar#lerp
   //
 
-
   //window.addEventListener("keydown", function (event) {
   scene.registerBeforeRender(function() {	
     //var targetPosition = pointer.pickedPoint.clone();
@@ -1050,6 +1102,10 @@ var buildScene = async function (scene) {
           // set current player's next position immediatelly
           playerNextPosition[room.sessionId] = targetPosition;
           playerNextRotation[room.sessionId] = targetRotation;
+          modelNextPosition[pickedMesh.name] = pickedMesh.position;
+          modelNextRotation[pickedMesh.name] = pickedMesh.rotation;
+          modelNextScaling[pickedMesh.name] = pickedMesh.scaling;
+          //console.log(modelNextPosition);
           // Send position update to the server
           room.send("updatePosition", {
               x: targetPosition.x,
@@ -1058,6 +1114,16 @@ var buildScene = async function (scene) {
               a: targetRotation.x,
               b: targetRotation.y,
               c: targetRotation.z,
+              name: pickedMesh.name,
+              posx: pickedMesh.position.x,
+              posy: pickedMesh.position.y,
+              posz: pickedMesh.position.z,
+              rotx: pickedMesh.rotation.x,
+              roty: pickedMesh.rotation.y,
+              rotz: pickedMesh.rotation.z,
+              scalx: pickedMesh.scaling.x,
+              scaly: pickedMesh.scaling.y,
+              scalz: pickedMesh.scaling.z,
           });
           //console.log('colyseus');
 
@@ -1068,12 +1134,48 @@ var buildScene = async function (scene) {
           var targetRotation = playerNextRotation[sessionId];
           entity.position = BABYLON.Vector3.Lerp(entity.position, targetPosition, 0.5);
           entity.rotation = BABYLON.Vector3.Lerp(entity.rotation, targetRotation, 0.5);
-          sphereentity.position = entity.position;
-          sphereentity.rotation = entity.rotation;
+          if(sphereentity.position && sphereentity.rotation){
+            sphereentity.position = entity.position;
+            sphereentity.rotation = entity.rotation;
+          }
           //sphereentity.scaling = new BABYLON.Vector3(0.3, 0.3, 0.3);
+      }
+      for (let modelName in modelEntities) {
+        var modelentity = modelEntities[modelName];
+        var modelPosition = modelNextPosition[modelName];
+        var modelRotation = modelNextRotation[modelName];
+        var modelScaling = modelNextScaling[modelName];
+        if(modelentity.position && modelentity.rotation && modelentity.scaling){
+        modelentity.position = BABYLON.Vector3.Lerp(modelentity.position, modelPosition, 0.5);
+        modelentity.rotation = BABYLON.Vector3.Lerp(modelentity.rotation, modelRotation, 0.5);
+        modelentity.scaling = BABYLON.Vector3.Lerp(modelentity.scaling, modelScaling, 0.5);
+        //console.log(modelentity);
+        }
+        //sphereentity.scaling = new BABYLON.Vector3(0.3, 0.3, 0.3);
       }
     }
   })
+  // scene.registerAfterRender(function() {
+  //   //console.log(room.state.players.get(room.sessionId));	
+  //   room.send("updatePosition", {
+  //     x: targetPosition.x,
+  //     y: targetPosition.y,
+  //     z: targetPosition.z,
+  //     a: targetRotation.x,
+  //     b: targetRotation.y,
+  //     c: targetRotation.z,
+  //     name: pickedMesh.name,
+  //     posx: pickedMesh.position.x,
+  //     posy: pickedMesh.position.y,
+  //     posz: pickedMesh.position.z,
+  //     rotx: pickedMesh.rotation.x,
+  //     roty: pickedMesh.rotation.y,
+  //     rotz: pickedMesh.rotation.z,
+  //     scalx: pickedMesh.scaling.x,
+  //     scaly: pickedMesh.scaling.y,
+  //     scalz: pickedMesh.scaling.z,
+  // });
+  // });
 };
 
 createScene().then(sceneToRender => {
