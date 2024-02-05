@@ -44,7 +44,6 @@ function removeEndDigits(inputString) {
 }
 
 
-
 function hideAllChildren(parentNode) {
   // 直接の子オブジェクトを非表示にする
   //var directChildren = parentNode.getChildren();
@@ -205,9 +204,9 @@ plane4.setEnabled(false);
 // tmpRay.length = 10;
 var hit;
 var tmpMesh;
-// var startCube=BABYLON.MeshBuilder.CreateBox("cube", { size: 1 }, scene);
-// var pickedMesh=startCube;
-// pickedMesh.setEnabled(false);
+var startCube=BABYLON.MeshBuilder.CreateBox("cube", { size: 1 }, scene);
+var pickedMesh=startCube;
+pickedMesh.setEnabled(false);
 var pickedMesh_parent;
 var pickedMesh_pos;
 
@@ -1107,6 +1106,7 @@ var buildScene = async function (scene) {
           modelNextScaling[pickedMesh.name] = pickedMesh.scaling;
           //console.log(modelNextPosition);
           // Send position update to the server
+          if(pickedMesh.position && pickedMesh.rotation && pickedMesh.scaling){
           room.send("updatePosition", {
               x: targetPosition.x,
               y: targetPosition.y,
@@ -1125,6 +1125,7 @@ var buildScene = async function (scene) {
               scaly: pickedMesh.scaling.y,
               scalz: pickedMesh.scaling.z,
           });
+        }
           //console.log('colyseus');
 
       for (let sessionId in playerEntities) {
