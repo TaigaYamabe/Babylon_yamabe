@@ -1,7 +1,5 @@
-Metaverse_babylon/Babylon_yamabe.php
+index.php
 ファイルのアップロード機能をつけてサーバー側の処理を行うため、拡張子が.phpになっています。
-phpの実行環境はMAMPを使用。
-
 
 Metaverse_babylon/js/script.js
 babylonの処理はここで行っています。
