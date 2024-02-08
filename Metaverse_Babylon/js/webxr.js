@@ -2,9 +2,16 @@ const canvas = document.getElementById("renderCanvas");
 const engine = new BABYLON.Engine(canvas, true);
 var HOST_ENDPOINT = "wss://economic-unleashed-citrine.glitch.me";
 var ROOM_NAME = "my_room";
+var room = {};
+var xr = {};
+var xr_Check = 0;
+var camera_id = {};
 var targetPosition = {};
 var targetRotation = {};
 var pickedMesh={};
+var playerEntities = {};
+var playerNextPosition = {};
+var playerNextRotation = {};
 var modelEntities = {};
 var modelNextPosition = {};
 var modelNextRotation = {};
@@ -87,21 +94,34 @@ function NotColorAllChildren(parentNode) {
 // var result = removeEndDigits(originalString);
 // console.log(result); // "example"
 var num = 1;
-var xr = await scene.createDefaultXRExperienceAsync({
+xr = await scene.createDefaultXRExperienceAsync({
   //floorMeshes: [environment.ground] /* Array of meshes to be used as landing points */
 });
+//xr.baseExperience.camera.name = "aw";
 xr.teleportation.detach();
 xr.baseExperience.onStateChangedObservable.add((state)=>{
   if(state === BABYLON.WebXRState.IN_XR){
-
-      //console.log('WebXR camera position(before_enteringVR): '+xr.baseExperience.camera.position);
-      xr.baseExperience.camera.position.set(0, 2.5, 25);
-      //console.log('WebXR camera position(after_enteringVR): '+xr.baseExperience.camera.position);
+    xr_Check = 1;
+    //camera_id = xr.baseExperience.camera;
+    // playerEntities[sessionId] = xr.baseExperience.camera;
+    // playerNextPosition[sessionId] = xr.baseExperience.camera.position.clone();
+    // playerNextRotation[sessionId] = xr.baseExperience.camera.rotation.clone();
+    //console.log('WebXR camera position(before_enteringVR): '+xr.baseExperience.camera.position);
+    xr.baseExperience.camera.position = camera_id.position;
+    xr.baseExperience.camera.rotation =new BABYLON.Vector3(0, Math.PI, 0);
+    //console.log('WebXR camera position(after_enteringVR): '+xr.baseExperience.camera.position);
   
   }        
   else if (state === BABYLON.WebXRState.NOT_IN_XR) {
     // XRモードから出たときの処理
     // ここに特定の処理を追加
+    xr_Check = 0;
+    camera_id.position = xr.baseExperience.camera.position;
+    camera_id.rotation = xr.baseExperience.camera.rotation;
+    // playerEntities[sessionId] = camera_id;
+    // playerNextPosition[sessionId] = camera_id.position.clone();
+    // playerNextRotation[sessionId] = camera_id.rotation.clone();
+    //camera_id = scene.getCameraByName(`camera-${room.sessionId}`);
     plane1.setEnabled(false);
     plane2.setEnabled(false);
     plane3.setEnabled(false);
@@ -205,13 +225,13 @@ plane4.setEnabled(false);
 var hit;
 var tmpMesh;
 var startCube=BABYLON.MeshBuilder.CreateBox("cube", { size: 1 }, scene);
-var pickedMesh=startCube;
+pickedMesh=startCube;
 pickedMesh.setEnabled(false);
 var pickedMesh_parent;
 var pickedMesh_pos;
 
-pickedMesh=BABYLON.MeshBuilder.CreateBox("cube", { size: 1 }, scene);
-      pickedMesh.dispose();
+// pickedMesh=BABYLON.MeshBuilder.CreateBox("cube", { size: 1 }, scene);
+//       pickedMesh.dispose();
 var obj_mat ={};
 var space ={};
 var csvArray = [["delete:"]];
@@ -496,47 +516,47 @@ if(pickedMesh.name != "space"){
     if((map["a"] || map["A"])){
       if(pickedMesh!= null){
         if(boundingBox_center.x <= 35){
-          pickedMesh.translate(BABYLON.Axis.X, 2*distance, BABYLON.Space.WORLD);
+          pickedMesh.translate(BABYLON.Axis.X, distance, BABYLON.Space.WORLD);
         }
       }
     }
     //"d"または"D"を押し続けている間、if文を実行
     if((map["d"] || map["D"])){
       if(boundingBox_center.x >= -35){
-        pickedMesh.translate(BABYLON.Axis.X, -2*distance, BABYLON.Space.WORLD);
+        pickedMesh.translate(BABYLON.Axis.X, -distance, BABYLON.Space.WORLD);
       }
     }
     //"w"または"W"を押し続けている間、if文を実行
     if((map["w"] || map["W"])){
       if(boundingBox_center.y <= 15){
-        pickedMesh.translate(BABYLON.Axis.Y, 2*distance, BABYLON.Space.WORLD);
+        pickedMesh.translate(BABYLON.Axis.Y, distance, BABYLON.Space.WORLD);
       }
     }
     //"s"または"S"を押し続けている間、if文を実行
     if((map["s"] || map["S"])){
       if(boundingBox_center.y >= -9){
-        pickedMesh.translate(BABYLON.Axis.Y, -2*distance, BABYLON.Space.WORLD);
+        pickedMesh.translate(BABYLON.Axis.Y, -distance, BABYLON.Space.WORLD);
       }
     }
     //"q"または"Q"を押し続けている間、if文を実行
     if((map["q"] || map["Q"])){
       if(boundingBox_center.z >= -8){
-      pickedMesh.translate(BABYLON.Axis.Z, -2*distance, BABYLON.Space.WORLD);
+      pickedMesh.translate(BABYLON.Axis.Z, -distance, BABYLON.Space.WORLD);
       }
     }
     //"e"または"E"を押し続けている間、if文を実行
     if((map["e"] || map["E"])){
       if(boundingBox_center.z <= 80){
-      pickedMesh.translate(BABYLON.Axis.Z, 2*distance, BABYLON.Space.WORLD);
+      pickedMesh.translate(BABYLON.Axis.Z, distance, BABYLON.Space.WORLD);
       }
     }
     //"1"を押し続けている間、if文を実行
     if((map["1"])){
       //pickedMesh.rotate(BABYLON.Axis.Y, distance/5, BABYLON.Space.WORLD);
-      pickedMesh.rotation = pickedMesh.rotation.add(new BABYLON.Vector3(0, -distance, 0));
+      pickedMesh.rotation = pickedMesh.rotation.add(new BABYLON.Vector3(0, -distance/2, 0));
     }
     if((map["2"])){
-      pickedMesh.rotation = pickedMesh.rotation.add(new BABYLON.Vector3(0, distance, 0));
+      pickedMesh.rotation = pickedMesh.rotation.add(new BABYLON.Vector3(0, distance/2, 0));
       //pickedMesh.rotate(BABYLON.Axis.X, distance/5, BABYLON.Space.WORLD);
     }
     if((map["3"])){
@@ -914,17 +934,17 @@ var buildScene = async function (scene) {
   //
   // Connect with Colyseus server
   //
-  var room = await colyseusSDK.joinOrCreate(ROOM_NAME);
+  room = await colyseusSDK.joinOrCreate(ROOM_NAME);
   loadingText.text = `Connection established!-${ROOM_NAME}`;
   id_text.text = `ID-${room.sessionId}`;
   // Local entity map
-  var playerEntities = {};
-  var playerNextPosition = {};
-  var playerNextRotation = {};
+  // var playerEntities = {};
+  // var playerNextPosition = {};
+  // var playerNextRotation = {};
   var sphereEntities = {};
   //var mainCamera = {};
   var textPosition = {};
-  var camera_id = {};
+ 
 
   // var modelEntities = {};
   // var modelNextPosition = {};
@@ -1083,16 +1103,25 @@ var buildScene = async function (scene) {
   //
 
   //window.addEventListener("keydown", function (event) {
-  scene.registerBeforeRender(function() {	
+  scene.registerAfterRender(function() {	
     //var targetPosition = pointer.pickedPoint.clone();
-    var SphereByName = scene.getMeshByName(`player-${room.sessionId}`);
+    var playerByName = scene.getMeshByName(`player-${room.sessionId}`);
     var objectByName = scene.getCameraByName(`camera-${room.sessionId}`);
-    if (objectByName && SphereByName) {
+    if(xr_Check == 1){
+       //objectByName.position = xr.baseExperience.camera.position;
+       //objectByName.rotation = xr.baseExperience.camera.rotation;
+       objectByName.position = BABYLON.Vector3.Lerp(objectByName.position, xr.baseExperience.camera.position, 0.5);
+       objectByName.rotation = BABYLON.Vector3.Lerp(objectByName.rotation, xr.baseExperience.camera.rotation, 0.5);
+       objectByName.position.y -= 0.5;
+    }
+    //var objectByName = xr.baseExperience.camera;
+    //var objectByName = scene.activeCamera;
+    if (objectByName && playerByName) {
         //var objectByName = scene.getCameraByName(`camera-${room.sessionId}`);
         //objectByName.position = camera_id.position;
-        SphereByName.position = objectByName.position;
-        SphereByName.rotation = objectByName.rotation;
-        SphereByName.scaling = new BABYLON.Vector3(0.3, 0.3, 0.3);
+        playerByName.position = objectByName.position;
+        playerByName.rotation = objectByName.rotation;
+        playerByName.scaling = new BABYLON.Vector3(0.3, 0.3, 0.3);
         //SphereByName.material.alpha =0.5;
         var targetPosition = objectByName.position;
         var targetRotation = objectByName.rotation;
@@ -1106,7 +1135,7 @@ var buildScene = async function (scene) {
           modelNextScaling[pickedMesh.name] = pickedMesh.scaling;
           //console.log(modelNextPosition);
           // Send position update to the server
-          if(pickedMesh.position && pickedMesh.rotation && pickedMesh.scaling){
+          // if(pickedMesh.position){
           room.send("updatePosition", {
               x: targetPosition.x,
               y: targetPosition.y,
@@ -1125,16 +1154,20 @@ var buildScene = async function (scene) {
               scaly: pickedMesh.scaling.y,
               scalz: pickedMesh.scaling.z,
           });
-        }
+          //console.log("1");
+        // }
           //console.log('colyseus');
 
       for (let sessionId in playerEntities) {
           var entity = playerEntities[sessionId];
           var sphereentity = sphereEntities[sessionId];
-          var targetPosition = playerNextPosition[sessionId];
-          var targetRotation = playerNextRotation[sessionId];
+          targetPosition = playerNextPosition[sessionId];
+          targetRotation = playerNextRotation[sessionId];
+          
           entity.position = BABYLON.Vector3.Lerp(entity.position, targetPosition, 0.5);
           entity.rotation = BABYLON.Vector3.Lerp(entity.rotation, targetRotation, 0.5);
+          //entity.position = targetPosition;
+          //entity.rotation = targetRotation;
           if(sphereentity.position && sphereentity.rotation){
             sphereentity.position = entity.position;
             sphereentity.rotation = entity.rotation;
@@ -1150,33 +1183,15 @@ var buildScene = async function (scene) {
         modelentity.position = BABYLON.Vector3.Lerp(modelentity.position, modelPosition, 0.5);
         modelentity.rotation = BABYLON.Vector3.Lerp(modelentity.rotation, modelRotation, 0.5);
         modelentity.scaling = BABYLON.Vector3.Lerp(modelentity.scaling, modelScaling, 0.5);
+        // modelentity.position = modelPosition;
+        // modelentity.rotation = modelRotation;
+        // modelentity.scaling = modelScaling;
         //console.log(modelentity);
         }
         //sphereentity.scaling = new BABYLON.Vector3(0.3, 0.3, 0.3);
       }
     }
   })
-  // scene.registerAfterRender(function() {
-  //   //console.log(room.state.players.get(room.sessionId));	
-  //   room.send("updatePosition", {
-  //     x: targetPosition.x,
-  //     y: targetPosition.y,
-  //     z: targetPosition.z,
-  //     a: targetRotation.x,
-  //     b: targetRotation.y,
-  //     c: targetRotation.z,
-  //     name: pickedMesh.name,
-  //     posx: pickedMesh.position.x,
-  //     posy: pickedMesh.position.y,
-  //     posz: pickedMesh.position.z,
-  //     rotx: pickedMesh.rotation.x,
-  //     roty: pickedMesh.rotation.y,
-  //     rotz: pickedMesh.rotation.z,
-  //     scalx: pickedMesh.scaling.x,
-  //     scaly: pickedMesh.scaling.y,
-  //     scalz: pickedMesh.scaling.z,
-  // });
-  // });
 };
 
 createScene().then(sceneToRender => {
