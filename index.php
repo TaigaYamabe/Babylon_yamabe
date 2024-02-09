@@ -28,7 +28,7 @@
     -->
     <form enctype="multipart/form-data"  action="upload.php" method="POST">
         <input type="file" name="file1" value="value" />
-        <input type="submit" value="3Dモデルアップロード" />
+        <input type="submit" value="アップロード" />
     </form>
 
 
@@ -41,16 +41,22 @@
         <input type="hidden" name="csvArray" id="csvArray" value="">
         <input type="submit" value="保存">
     </form>
-    <button id="playButton">再生</button>
-    <button id="pauseButton">一時停止</button>
+    <!-- <button id="playButton">再生</button>
+    <button id="pauseButton">一時停止</button> -->
     <div>
-        <label for="textInput">Player Name: </label>
+        <label for="textInput">Name: </label>
         <input type="text" id="textInput">
     </div>
     <!-- <video width="640" height="360" controls>
     <source src="Metaverse_Babylon/movie/sea.mp4" type="video/mp4">
     Your browser does not support the video tag.
     </video> -->
+    <div id="custom-controls">
+            <button id="play-pause">Play</button>
+            <input id="seek-bar" type="range" value="0">
+            <button id="mute">Unmute</button>
+            <input id="volume-bar" type="range" value="100">
+    </div>
     <!-- <video id="sampleVideo">
 	<source src="Metaverse_Babylon/movie/授業サンプル.mp4">
     </video> -->

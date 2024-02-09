@@ -154,13 +154,23 @@ plane.rotation =new BABYLON.Vector3(0, Math.PI, 0);
 
 //BABYLON.VideoTexture.UseMediaSourceExtension = false;
 // 動画のテクスチャを作成
-var videoTexture = new BABYLON.VideoTexture("video", ["./Metaverse_Babylon/movie/sea.mp4"], scene, false,false);
+var videoTexture = new BABYLON.VideoTexture("video", ["./Metaverse_Babylon/movie/sea.mp4"], scene, true,false);
+videoTexture.onLoadObservable.addOnce(function () {
+  // ここにvideoTextureが完全に読み込まれた後に実行したい処理を書きます
+  videoTexture.video.currentTime = 0;
+  console.log("videoTextureが読み込まれました！");
+});
+//videoTexture.video.pause();
 // if (videoTexture && videoTexture.video) {
 //   videoTexture.video.muted = true;
 // } else {
 //   console.error("Either videoTexture or its video property is undefined or null.");
 // }
 videoTexture.video.autoplay = false;
+// console.log(videoTexture.video.currentTime);
+// // videoTexture.video.pause();
+// videoTexture.video.currentTime = 0;
+// console.log(videoTexture.video.currentTime);
 //videoTexture.video.muted = true;
 var screen = BABYLON.MeshBuilder.CreatePlane("space", { size: 5 }, scene);
 var material = new BABYLON.StandardMaterial("videoMaterial", scene);
@@ -179,15 +189,61 @@ screen.rotation =new BABYLON.Vector3(0, Math.PI, 0);
 // else{
 //   console.log("videoない");
 // }
-document.getElementById("playButton").addEventListener("click", function () {
-  videoTexture.video.play();
-  videoTexture.video.muted = false;
-      //video.play();
+// document.getElementById("playButton").addEventListener("click", function () {
+//   videoTexture.video.play();
+//   videoTexture.video.muted = false;
+//       //video.play();
+// });
+// document.getElementById("pauseButton").addEventListener("click", function () {
+//   //videoTexture.video.muted = true;
+//   videoTexture.video.pause();
+//       //video.pause();
+// });
+var playPauseButton = document.getElementById("play-pause");
+var seekBar = document.getElementById("seek-bar");
+var muteButton = document.getElementById("mute");
+var volumeBar = document.getElementById("volume-bar");
+// 再生・一時停止の切り替え
+playPauseButton.addEventListener("click", function () {
+    if (videoTexture.video.paused) {
+        videoTexture.video.play();
+        playPauseButton.textContent = "Pause";
+    } else {
+        videoTexture.video.pause();
+        playPauseButton.textContent = "Play";
+    }
 });
-document.getElementById("pauseButton").addEventListener("click", function () {
-  //videoTexture.video.muted = true;
-  videoTexture.video.pause();
-      //video.pause();
+
+// シークバーの更新
+videoTexture.video.addEventListener("timeupdate", function () {
+    var value = (videoTexture.video.currentTime / videoTexture.video.duration) * 100;
+    seekBar.value = value;
+});
+
+// シークバーでの動画移動
+seekBar.addEventListener("input", function () {
+    var value = seekBar.value * videoTexture.video.duration / 100;
+    videoTexture.video.currentTime = value;
+});
+
+// ミュートの切り替え
+muteButton.addEventListener("click", function () {
+    videoTexture.video.muted = !videoTexture.video.muted;
+    if (videoTexture.video.muted) {
+        muteButton.textContent = "Unmute";
+    } else {
+        muteButton.textContent = "Mute";
+    }
+});
+
+// ボリュームバーの更新
+videoTexture.video.addEventListener("volumechange", function () {
+    volumeBar.value = videoTexture.video.volume * 100;
+});
+
+// ボリュームバーでの音量調整
+volumeBar.addEventListener("input", function () {
+    videoTexture.video.volume = volumeBar.value / 100;
 });
 
 
