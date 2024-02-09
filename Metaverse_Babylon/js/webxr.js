@@ -16,6 +16,7 @@ var modelEntities = {};
 var modelNextPosition = {};
 var modelNextRotation = {};
 var modelNextScaling = {};
+var id_textNext = {};
 // Load Colyseus SDK (asynchronously)
 var scriptUrl = "https://unpkg.com/colyseus.js@^0.15.0-preview.2/dist/colyseus.js";
 var externalScript = document.createElement("script");
@@ -32,6 +33,14 @@ non_vr_camera.rotation =new BABYLON.Vector3(0, Math.PI, 0);
 //console.log("non vr camera position"+non_vr_camera.position);
 //non_vr_camera.setTarget(BABYLON.Vector3.Zero());
 non_vr_camera.attachControl(canvas, true);
+
+var textInput = document.getElementById("textInput");
+textInput.addEventListener("input", function() {
+    var enteredText = textInput.value;
+    id_text.text = textInput.value;
+    console.log("Entered Text: ", enteredText);
+    // ここで入力されたテキストを利用して何かを行うことができます
+});
 
 // // immersive-vrが起動したときの処理を定義する関数
 // function handleVRStart() {
@@ -143,8 +152,16 @@ plane.position = new BABYLON.Vector3(1.5, 6, -14);
 plane.scaling = new BABYLON.Vector3(4.0, 2.2, 1);
 plane.rotation =new BABYLON.Vector3(0, Math.PI, 0);
 
+//BABYLON.VideoTexture.UseMediaSourceExtension = false;
 // 動画のテクスチャを作成
-var videoTexture = new BABYLON.VideoTexture("video", ["./Metaverse_Babylon/movie/授業サンプル.mp4"], scene, true);
+var videoTexture = new BABYLON.VideoTexture("video", ["./Metaverse_Babylon/movie/授業サンプル.mp4"], scene, false,false);
+// if (videoTexture && videoTexture.video) {
+//   videoTexture.video.muted = true;
+// } else {
+//   console.error("Either videoTexture or its video property is undefined or null.");
+// }
+videoTexture.video.autoplay = false;
+//videoTexture.video.muted = true;
 var screen = BABYLON.MeshBuilder.CreatePlane("space", { size: 5 }, scene);
 var material = new BABYLON.StandardMaterial("videoMaterial", scene);
 material.diffuseTexture = videoTexture;
@@ -153,7 +170,25 @@ screen.material = material;
 screen.position = new BABYLON.Vector3(-19.5, 6, -14.8);
 screen.scaling = new BABYLON.Vector3(3.7, 2.4, 1);
 screen.rotation =new BABYLON.Vector3(0, Math.PI, 0);
+//videoTexture.video.pause();
 //plane.parent = non_vr_camera;
+// var video = document.querySelector("video");
+// if(video){
+//   console.log("videoある");
+// }
+// else{
+//   console.log("videoない");
+// }
+document.getElementById("playButton").addEventListener("click", function () {
+  videoTexture.video.play();
+  videoTexture.video.muted = false;
+      //video.play();
+});
+document.getElementById("pauseButton").addEventListener("click", function () {
+  //videoTexture.video.muted = true;
+  videoTexture.video.pause();
+      //video.pause();
+});
 
 
 var plane1 = BABYLON.MeshBuilder.CreatePlane("plane1", { size: 5 }, scene);
@@ -909,7 +944,7 @@ document.addEventListener("keydown", function (event) {
   loadingText.paddingBottom = "5px";
   advancedTexture.addControl(loadingText);
 
-  id_text.text = `ID - ...`;
+  id_text.text = `...`;
   id_text.color = "#fff000";
   id_text.fontSize = 30;
 // テキストの位置設定（左上）
@@ -936,15 +971,15 @@ var buildScene = async function (scene) {
   //
   room = await colyseusSDK.joinOrCreate(ROOM_NAME);
   loadingText.text = `Connection established!-${ROOM_NAME}`;
-  id_text.text = `ID-${room.sessionId}`;
+  id_text.text = `${room.sessionId}`;
   // Local entity map
   // var playerEntities = {};
   // var playerNextPosition = {};
   // var playerNextRotation = {};
   var sphereEntities = {};
   //var mainCamera = {};
+  var id_textEntities = {};
   var textPosition = {};
- 
 
   // var modelEntities = {};
   // var modelNextPosition = {};
@@ -964,6 +999,7 @@ var buildScene = async function (scene) {
       var advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
       var text = new BABYLON.GUI.TextBlock();
       text.color = getRandomColor(); // ランダムな色を設定
+      //text.text = player.player_name;
       text.text = `${sessionId}`;
       advancedTexture.addControl(text);
       text.linkWithMesh(camera_id);
@@ -1028,6 +1064,7 @@ var buildScene = async function (scene) {
       playerNextPosition[sessionId] = camera_id.position.clone();
       playerNextRotation[sessionId] = camera_id.rotation.clone();
       //sphereEntities[sessionId] = sphere;
+      id_textEntities[sessionId] = id_text.text;
       textPosition[sessionId] = text;
 
       if(pickedMesh.position && pickedMesh.rotation && pickedMesh.scaling){
@@ -1041,6 +1078,8 @@ var buildScene = async function (scene) {
       player.onChange(() => {
           playerNextPosition[sessionId].set(player.x, player.y, player.z);
           playerNextRotation[sessionId].set(player.a, player.b, player.c);
+          id_textNext[sessionId] = player.player_name;
+          //console.log(id_textNext);
 
           //console.log(player);
           if(modelNextPosition[player.name] && modelNextRotation[player.name] && modelNextScaling[player.name]){
@@ -1060,11 +1099,14 @@ var buildScene = async function (scene) {
       playerEntities[sessionId].dispose();
       sphereEntities[sessionId].dispose();
       //mainCamera[sessionId].dispose();
+      //id_textEntities[sessionId].dispose();
       textPosition[sessionId].dispose();
       delete playerEntities[sessionId];
       delete playerNextPosition[sessionId];
       delete sphereEntities[sessionId];
       //delete mainCamera[sessionId];
+      delete id_textEntities[sessionId];
+      delete id_textNext[sessionId];
       delete textPosition[sessionId];
   });
 
@@ -1153,6 +1195,7 @@ var buildScene = async function (scene) {
               scalx: pickedMesh.scaling.x,
               scaly: pickedMesh.scaling.y,
               scalz: pickedMesh.scaling.z,
+              player_name: id_text.text,
           });
           //console.log("1");
         // }
@@ -1161,8 +1204,12 @@ var buildScene = async function (scene) {
       for (let sessionId in playerEntities) {
           var entity = playerEntities[sessionId];
           var sphereentity = sphereEntities[sessionId];
+          //var id_textentity = id_textEntities[sessionId];
+          var textentity = textPosition[sessionId];
           targetPosition = playerNextPosition[sessionId];
           targetRotation = playerNextRotation[sessionId];
+          textentity.text = id_textNext[sessionId];
+          //id_textentity = id_textNext[sessionId];
           
           entity.position = BABYLON.Vector3.Lerp(entity.position, targetPosition, 0.5);
           entity.rotation = BABYLON.Vector3.Lerp(entity.rotation, targetRotation, 0.5);

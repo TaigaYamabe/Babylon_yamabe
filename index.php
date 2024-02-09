@@ -41,6 +41,19 @@
         <input type="hidden" name="csvArray" id="csvArray" value="">
         <input type="submit" value="保存">
     </form>
+    <button id="playButton">再生</button>
+    <button id="pauseButton">一時停止</button>
+    <div>
+        <label for="textInput">Player Name: </label>
+        <input type="text" id="textInput">
+    </div>
+    <!-- <video width="640" height="360" controls>
+    <source src="Metaverse_Babylon/movie/授業サンプル.mp4" type="video/mp4">
+    Your browser does not support the video tag.
+</video> -->
+    <!-- <video id="sampleVideo">
+	<source src="Metaverse_Babylon/movie/授業サンプル.mp4">
+    </video> -->
     <!-- <form method="post" action="http://localhost/index2.php" enctype="multipart/form-data" id="form">
         <input type="file" name="file2">
         <button type="button" id="submit-button">3Dモデルアップロード</button> 
