@@ -154,7 +154,7 @@ plane.rotation =new BABYLON.Vector3(0, Math.PI, 0);
 
 //BABYLON.VideoTexture.UseMediaSourceExtension = false;
 // 動画のテクスチャを作成
-var videoTexture = new BABYLON.VideoTexture("video", ["./Metaverse_Babylon/movie/授業サンプル.mp4"], scene, false,false);
+var videoTexture = new BABYLON.VideoTexture("video", ["./Metaverse_Babylon/movie/sea.mp4"], scene, false,false);
 // if (videoTexture && videoTexture.video) {
 //   videoTexture.video.muted = true;
 // } else {

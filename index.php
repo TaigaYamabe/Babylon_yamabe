@@ -48,9 +48,9 @@
         <input type="text" id="textInput">
     </div>
     <!-- <video width="640" height="360" controls>
-    <source src="Metaverse_Babylon/movie/授業サンプル.mp4" type="video/mp4">
+    <source src="Metaverse_Babylon/movie/sea.mp4" type="video/mp4">
     Your browser does not support the video tag.
-</video> -->
+    </video> -->
     <!-- <video id="sampleVideo">
 	<source src="Metaverse_Babylon/movie/授業サンプル.mp4">
     </video> -->
