@@ -17,6 +17,8 @@ var modelNextPosition = {};
 var modelNextRotation = {};
 var modelNextScaling = {};
 var id_textNext = {};
+
+
 // Load Colyseus SDK (asynchronously)
 var scriptUrl = "https://unpkg.com/colyseus.js@^0.15.0-preview.2/dist/colyseus.js";
 var externalScript = document.createElement("script");
@@ -662,30 +664,75 @@ scene.registerBeforeRender(function() {
 //     scene.getMaterialByName("videoMaterial").getTexture().video.play();
 // }
 //"a"または"A"を押し続けている間、if文を実行
+// if((map["ArrowUp"])){
+//     xr.baseExperience.camera.position = xr.baseExperience.camera.position.add(new BABYLON.Vector3(-distance, 0, 0));
+//     //xr.baseExperience.camera.translate(BABYLON.Axis.X, -2*distance, BABYLON.Space.WORLD);
+// }
+// //"d"または"D"を押し続けている間、if文を実行
+// if((map["ArrowDown"])){
+//     xr.baseExperience.camera.position = xr.baseExperience.camera.position.add(new BABYLON.Vector3(distance, 0, 0));
+// }
+// //"w"または"W"を押し続けている間、if文を実行
+// if((map[","])){
+//     xr.baseExperience.camera.position = xr.baseExperience.camera.position.add(new BABYLON.Vector3(0, distance, 0));
+// }
+// //"s"または"S"を押し続けている間、if文を実行
+// if((map["."])){
+//     xr.baseExperience.camera.position = xr.baseExperience.camera.position.add(new BABYLON.Vector3(0, -distance, 0));
+// }
+// //"w"または"W"を押し続けている間、if文を実行
+// if((map["ArrowRight"])){
+//     xr.baseExperience.camera.position = xr.baseExperience.camera.position.add(new BABYLON.Vector3(0, 0,distance));
+// }
+// //"s"または"S"を押し続けている間、if文を実行
+// if((map["ArrowLeft"])){
+//     xr.baseExperience.camera.position = xr.baseExperience.camera.position.add(new BABYLON.Vector3(0, 0, -distance));
+// }
+var cameraByName = scene.getCameraByName(`camera-${room.sessionId}`);
 if((map["ArrowUp"])){
-    xr.baseExperience.camera.position = xr.baseExperience.camera.position.add(new BABYLON.Vector3(-distance, 0, 0));
-    //xr.baseExperience.camera.translate(BABYLON.Axis.X, -2*distance, BABYLON.Space.WORLD);
+  //console.log("1");
+  if(cameraByName!= null){
+    if(cameraByName.position && cameraByName.rotation){
+      cameraByName.position.z += 0.2 * Math.cos(cameraByName.rotation.y);
+      cameraByName.position.x += 0.2 * Math.sin(cameraByName.rotation.y);
+    }
+    //camera_id.translate(BABYLON.Axis.Y, distance, BABYLON.Space.WORLD);
+    //camera_id.position.z += 0.3;
+  }
 }
 //"d"または"D"を押し続けている間、if文を実行
 if((map["ArrowDown"])){
-    xr.baseExperience.camera.position = xr.baseExperience.camera.position.add(new BABYLON.Vector3(distance, 0, 0));
-}
-//"w"または"W"を押し続けている間、if文を実行
-if((map[","])){
-    xr.baseExperience.camera.position = xr.baseExperience.camera.position.add(new BABYLON.Vector3(0, distance, 0));
-}
-//"s"または"S"を押し続けている間、if文を実行
-if((map["."])){
-    xr.baseExperience.camera.position = xr.baseExperience.camera.position.add(new BABYLON.Vector3(0, -distance, 0));
+  if(cameraByName!= null){
+    if(cameraByName.position && cameraByName.rotation){
+      cameraByName.position.z -= 0.2 * Math.cos(cameraByName.rotation.y);
+      cameraByName.position.x -= 0.2 * Math.sin(cameraByName.rotation.y);
+    }
+    //camera_id.translate(BABYLON.Axis.Y, -distance, BABYLON.Space.WORLD);
+    //Math.cos(camera_id.rotation.y)
+
+  }
 }
 //"w"または"W"を押し続けている間、if文を実行
 if((map["ArrowRight"])){
-    xr.baseExperience.camera.position = xr.baseExperience.camera.position.add(new BABYLON.Vector3(0, 0,distance));
+  if(cameraByName!= null){
+    if(cameraByName.position && cameraByName.rotation){
+      cameraByName.position.x += 0.2 * Math.cos(cameraByName.rotation.y);
+      cameraByName.position.z -= 0.2 * Math.sin(cameraByName.rotation.y);
+    }
+    //camera_id.translate(BABYLON.Axis.X, distance, BABYLON.Space.WORLD);
+  }
 }
 //"s"または"S"を押し続けている間、if文を実行
 if((map["ArrowLeft"])){
-    xr.baseExperience.camera.position = xr.baseExperience.camera.position.add(new BABYLON.Vector3(0, 0, -distance));
+  if(cameraByName!= null){
+    if(cameraByName.position && cameraByName.rotation){
+      cameraByName.position.x -= 0.2 * Math.cos(cameraByName.rotation.y);
+      cameraByName.position.z += 0.2 * Math.sin(cameraByName.rotation.y);
+    }
+    //camera_id.translate(BABYLON.Axis.X, distance, BABYLON.Space.WORLD);
+  }
 }
+
 if(pickedMesh.name != "space"){
     var boundingBox_center = pickedMesh.getBoundingInfo().boundingBox.centerWorld;
     // var boundingBox_dimensions = pickedMesh.getBoundingInfo().boundingBox.maximumWorld.subtract( pickedMesh.getBoundingInfo().boundingBox.minimumWorld);
@@ -750,6 +797,46 @@ if(pickedMesh.name != "space"){
       //getAllChildren(obj).isVisible = false;
       hideAllChildren(pickedMesh);
     }
+
+    // if((map["ArrowUp"])){
+    //   //console.log("1");
+    //   if(camera_id!= null){
+    //     //camera_id.translate(BABYLON.Axis.Y, distance, BABYLON.Space.WORLD);
+    //     //camera_id.position.z += 0.3;
+    //     camera_id.position.z += 0.2 * Math.cos(camera_id.rotation.y);
+    //     camera_id.position.x += 0.2 * Math.sin(camera_id.rotation.y);
+    //   }
+    // }
+    // //"d"または"D"を押し続けている間、if文を実行
+    // if((map["ArrowDown"])){
+    //   if(camera_id!= null){
+    //     //camera_id.translate(BABYLON.Axis.Y, -distance, BABYLON.Space.WORLD);
+    //     //Math.cos(camera_id.rotation.y)
+    //     camera_id.position.z -= 0.2 * Math.cos(camera_id.rotation.y);
+    //     camera_id.position.x -= 0.2 * Math.sin(camera_id.rotation.y);
+
+    //   }
+    // }
+    // //"w"または"W"を押し続けている間、if文を実行
+    // if((map["ArrowRight"])){
+    //   if(camera_id!= null){
+    //     //camera_id.translate(BABYLON.Axis.X, distance, BABYLON.Space.WORLD);
+    //     camera_id.position.x += 0.2 * Math.cos(camera_id.rotation.y);
+    //     camera_id.position.z -= 0.2 * Math.sin(camera_id.rotation.y);
+    //   }
+    // }
+    // //"s"または"S"を押し続けている間、if文を実行
+    // if((map["ArrowLeft"])){
+    //   if(camera_id!= null){
+    //     //camera_id.translate(BABYLON.Axis.X, -distance, BABYLON.Space.WORLD);
+    //     camera_id.position.x -= 0.2 * Math.cos(camera_id.rotation.y);
+    //     camera_id.position.z += 0.2 * Math.sin(camera_id.rotation.y);
+    //   }
+    // }
+
+
+
+
     for(var n =0; n<csvArray.length; n++){
       if(pickedMesh.name == csvArray[n][0]){
         csvArray[n][1] = pickedMesh.position.x;
@@ -959,7 +1046,7 @@ document.addEventListener("keydown", function (event) {
                 //pickedMesh.scaling = pickedMesh.scaling.add(new BABYLON.Vector3(-0.01, -0.01, -0.01));
               }
               if(num == 4){
-                xr.baseExperience.camera.position.y -= 0.03;
+                //xr.baseExperience.camera.position.y -= 0.03;
               }
           }
              let xbuttonComponent = motionController.getComponent(xr_ids[3]);//x-button
@@ -988,7 +1075,7 @@ document.addEventListener("keydown", function (event) {
                 //pickedMesh.scaling = pickedMesh.scaling.add(new BABYLON.Vector3(0.01, 0.01, 0.01));
               }
               if(num == 4){
-                xr.baseExperience.camera.position.y += 0.01;
+                //xr.baseExperience.camera.position.y += 0.01;
               }
              }
              let ybuttonComponent = motionController.getComponent(xr_ids[4]);//y-button
@@ -1161,6 +1248,7 @@ var buildScene = async function (scene) {
       // //var camera_id = new BABYLON.FreeCamera(`camera-${sessionId}`, Math.PI / 2, 1.0, 550, scene);
       // camera_id.rotation =new BABYLON.Vector3(Math.PI/2, Math.PI/2, 0);
       camera_id.attachControl(canvas, true);
+      camera_id.inputs.removeByType('FreeCameraKeyboardMoveInput'); // 既存のキーボード入力をクリア
       scene.addCamera(camera_id);
       if(sessionId === room.sessionId){
         scene.activeCamera = camera_id;
@@ -1173,25 +1261,122 @@ var buildScene = async function (scene) {
       //   segments: 8,
       //   diameter: 1
       // });
-      BABYLON.SceneLoader.ImportMesh("","./Metaverse_Babylon/Models/","player_camera.glb", scene, 
-      //BABYLON.SceneLoader.ImportMesh("","./Models/", "lab.glb", scene, 
-      function (meshes) {
-        //console.log(meshes.length);
-        for(var i =1; i<meshes.length; i++){
-          meshes[i].name = "room";
-          meshes[i].visibility =0.5;
-        }
-        // const mesh = meshes[0];
-        // mesh.name = `player-${sessionId}`;
-        sphere = meshes[0];
+
+
+      BABYLON.SceneLoader.ImportMesh("", "https://assets.babylonjs.com/meshes/", "HVGirl.glb", scene, function (newMeshes, particleSystems, skeletons, animationGroups) {
+        for(var i =0; i<newMeshes.length; i++){
+          newMeshes[i].name = "space";
+         }
+        var sphere = newMeshes[0];
         sphere.name = `player-${sessionId}`;
-        sphere.scaling = new BABYLON.Vector3(0.5, 0.5, 0.5);
+        //sphere.scaling = new BABYLON.Vector3(0.5, 0.5, 0.5);
         //sphere.material.alpha =0.5;
-        sphere.position = camera_id.position;
+        sphere.position.x = camera_id.position.x;
+        sphere.position.z = camera_id.position.z;
         sphere.rotation = camera_id.rotation;
         sphereEntities[sessionId] = sphere;
-      },
-      );
+
+      sphere.position = new BABYLON.Vector3(0, -9, 0);
+      //Scale the model down        
+      sphere.scaling.scaleInPlace(0.3);
+
+      //Lock camera on the character 
+
+    //Hero character variables 
+    var heroSpeed = 0.1;
+    var heroSpeedBackwards = 0.1;
+    var heroRotationSpeed = 0.03;
+    var animating = true;
+
+    const walkAnim = scene.getAnimationGroupByName("Walking");
+    const walkBackAnim = scene.getAnimationGroupByName("WalkingBack");
+    const idleAnim = scene.getAnimationGroupByName("Idle");
+    const sambaAnim = scene.getAnimationGroupByName("Samba");
+
+    
+
+    //Rendering loop (executed for everyframe)
+    // scene.registerBeforeRender(function() {	
+    // //scene.onBeforeRenderObservable.add(() => {
+    //     var keydown = false;
+    //     //Manage the movements of the character (e.g. position, direction)
+    //     if (map["t"]) {
+    //       //console.log("t");
+    //         sphere.moveWithCollisions(hero.forward.scaleInPlace(heroSpeed));
+    //         keydown = true;
+    //     }
+    //     if (map["g"]) {
+    //         sphere.moveWithCollisions(hero.forward.scaleInPlace(-heroSpeedBackwards));
+    //         keydown = true;
+    //     }
+    //     if (map["f"]) {
+    //         sphere.rotate(BABYLON.Vector3.Up(), -heroRotationSpeed);
+    //         keydown = true;
+    //     }
+    //     if (map["h"]) {
+    //         sphere.rotate(BABYLON.Vector3.Up(), heroRotationSpeed);
+    //         keydown = true;
+    //     }
+    //     if (map["b"]) {
+    //         keydown = true;
+    //     }
+
+    //     //Manage animations to be played  
+    //     if (keydown) {
+    //         if (!animating) {
+    //             animating = true;
+    //             if (map["g"]) {
+    //                 //Walk backwards
+    //                 walkBackAnim.start(true, 1.0, walkBackAnim.from, walkBackAnim.to, false);
+    //             }
+    //             else if
+    //                 (map["b"]) {
+    //                 //Samba!
+    //                 sambaAnim.start(true, 1.0, sambaAnim.from, sambaAnim.to, false);
+    //             }
+    //             else {
+    //                 //Walk
+    //                 walkAnim.start(true, 1.0, walkAnim.from, walkAnim.to, false);
+    //             }
+    //         }
+    //     }
+    //     else {
+
+    //         if (animating) {
+    //             //Default animation is idle when no key is down     
+    //             idleAnim.start(true, 1.0, idleAnim.from, idleAnim.to, false);
+
+    //             //Stop all animations besides Idle Anim when no key is down
+    //             sambaAnim.stop();
+    //             walkAnim.stop();
+    //             walkBackAnim.stop();
+
+    //             //Ensure animation are played only once per rendering loop
+    //             animating = false;
+    //         }
+    //     }
+    // });
+});
+
+      // BABYLON.SceneLoader.ImportMesh("","./Metaverse_Babylon/Models/","player_camera.glb", scene, 
+      // //BABYLON.SceneLoader.ImportMesh("","./Models/", "lab.glb", scene, 
+      // function (meshes) {
+      //   //console.log(meshes.length);
+      //   for(var i =1; i<meshes.length; i++){
+      //     meshes[i].name = "room";
+      //     meshes[i].visibility =0.5;
+      //   }
+      //   // const mesh = meshes[0];
+      //   // mesh.name = `player-${sessionId}`;
+      //   sphere = meshes[0];
+      //   sphere.name = `player-${sessionId}`;
+      //   sphere.scaling = new BABYLON.Vector3(0.5, 0.5, 0.5);
+      //   //sphere.material.alpha =0.5;
+      //   sphere.position = camera_id.position;
+      //   sphere.rotation = camera_id.rotation;
+      //   sphereEntities[sessionId] = sphere;
+      // },
+      // );
       // sphere = BABYLON.MeshBuilder.CreateBox(`player-${sessionId}`, { size: 1 }, scene);
       // sphere.material = new BABYLON.StandardMaterial(`playerMat-${sessionId}`);
       //sphere.material.emissiveColor = (isCurrentPlayer) ? BABYLON.Color3.Yellow() : BABYLON.Color3.Gray();
@@ -1298,7 +1483,7 @@ var buildScene = async function (scene) {
        //objectByName.rotation = xr.baseExperience.camera.rotation;
        objectByName.position = BABYLON.Vector3.Lerp(objectByName.position, xr.baseExperience.camera.position, 0.5);
        objectByName.rotation = BABYLON.Vector3.Lerp(objectByName.rotation, xr.baseExperience.camera.rotation, 0.5);
-       objectByName.position.y -= 0.5;
+       objectByName.position.y -= 1.0;
     }
     //var objectByName = xr.baseExperience.camera;
     //var objectByName = scene.activeCamera;
@@ -1306,8 +1491,9 @@ var buildScene = async function (scene) {
         //var objectByName = scene.getCameraByName(`camera-${room.sessionId}`);
         //objectByName.position = camera_id.position;
         playerByName.position = objectByName.position;
-        playerByName.rotation = objectByName.rotation;
-        playerByName.scaling = new BABYLON.Vector3(0.3, 0.3, 0.3);
+        playerByName.rotation.y = objectByName.rotation.y;
+        //playerByName.rotation.x = 0;
+        //playerByName.scaling = new BABYLON.Vector3(0.3, 0.3, 0.3);
         //SphereByName.material.alpha =0.5;
         var targetPosition = objectByName.position;
         var targetRotation = objectByName.rotation;
@@ -1361,7 +1547,8 @@ var buildScene = async function (scene) {
           //entity.rotation = targetRotation;
           if(sphereentity && sphereentity.position && sphereentity.rotation){
             sphereentity.position = entity.position;
-            sphereentity.rotation = entity.rotation;
+            sphereentity.rotation.y = entity.rotation.y;
+            //sphereentity.rotation.x = 0;
           }
           //sphereentity.scaling = new BABYLON.Vector3(0.3, 0.3, 0.3);
       }
