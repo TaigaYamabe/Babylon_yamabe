@@ -18,6 +18,29 @@ var modelNextRotation = {};
 var modelNextScaling = {};
 var id_textNext = {};
 
+//Hero character variables 
+var heroSpeed = 0.1;
+var heroSpeedBackwards = 0.1;
+var heroRotationSpeed = 0.03;
+//var animating = true;
+var animating = {};
+var walkAnim = {};
+var walkBackAnim = {};
+var idleAnim = {};
+var sambaAnim = {};
+
+function hideAllChildren(parentNode) {
+  // 直接の子オブジェクトを非表示にする
+  //var directChildren = parentNode.getChildren();
+  var directChildren = parentNode.getChildren();
+  //console.log(directChildren)
+  directChildren.forEach(function (child) {
+          hideAllChildren(child); // 再帰的に子TransformNodeを処理
+          if (child instanceof BABYLON.Mesh) {
+            child.isVisible = false; // メッシュなど非TransformNodeの場合は非表示にする
+      }
+  });
+}
 
 // Load Colyseus SDK (asynchronously)
 var scriptUrl = "https://unpkg.com/colyseus.js@^0.15.0-preview.2/dist/colyseus.js";
@@ -62,18 +85,6 @@ function removeEndDigits(inputString) {
 }
 
 
-function hideAllChildren(parentNode) {
-  // 直接の子オブジェクトを非表示にする
-  //var directChildren = parentNode.getChildren();
-  var directChildren = parentNode.getChildren();
-  //console.log(directChildren)
-  directChildren.forEach(function (child) {
-          hideAllChildren(child); // 再帰的に子TransformNodeを処理
-          if (child instanceof BABYLON.Mesh) {
-            child.isVisible = false; // メッシュなど非TransformNodeの場合は非表示にする
-      }
-  });
-}
 
 function ColorAllChildren(parentNode) {
   // 直接の子オブジェクトを非表示にする
@@ -242,7 +253,6 @@ scene.actionManager = new BABYLON.ActionManager(scene);
 scene.actionManager.registerAction(new BABYLON.ExecuteCodeAction(BABYLON.ActionManager.OnKeyDownTrigger, function (evt) {								
 map[evt.sourceEvent.key] = evt.sourceEvent.type == "keydown"; 
 }));
-
 scene.actionManager.registerAction(new BABYLON.ExecuteCodeAction(BABYLON.ActionManager.OnKeyUpTrigger, function (evt) {								
 map[evt.sourceEvent.key] = evt.sourceEvent.type == "keydown";
 }));
@@ -256,26 +266,20 @@ BABYLON.SceneLoader.ImportMesh("", "https://assets.babylonjs.com/meshes/", "HVGi
     for(var i =0; i<newMeshes.length; i++){
       newMeshes[i].name = "space";
     }
+    console.log(animationGroups[0].name);
     //Scale the model down        
     hero.scaling.scaleInPlace(0.6);
 
     //Lock camera on the character 
 
-    //Hero character variables 
-    var heroSpeed = 0.1;
-    var heroSpeedBackwards = 0.1;
-    var heroRotationSpeed = 0.03;
-    var animating = true;
-
-    const walkAnim = scene.getAnimationGroupByName("Walking");
-    const walkBackAnim = scene.getAnimationGroupByName("WalkingBack");
-    const idleAnim = scene.getAnimationGroupByName("Idle");
-    const sambaAnim = scene.getAnimationGroupByName("Samba");
-
     
 
     //Rendering loop (executed for everyframe)
     scene.registerBeforeRender(function() {	
+      var walkAnim = scene.getAnimationGroupByName("Walking");
+      var walkBackAnim = scene.getAnimationGroupByName("WalkingBack");
+      var idleAnim = scene.getAnimationGroupByName("Idle");
+      var sambaAnim = scene.getAnimationGroupByName("Samba");
     //scene.onBeforeRenderObservable.add(() => {
         var keydown = false;
         //Manage the movements of the character (e.g. position, direction)
@@ -301,39 +305,39 @@ BABYLON.SceneLoader.ImportMesh("", "https://assets.babylonjs.com/meshes/", "HVGi
         }
 
         //Manage animations to be played  
-        if (keydown) {
-            if (!animating) {
-                animating = true;
-                if (map["g"]) {
-                    //Walk backwards
-                    walkBackAnim.start(true, 1.0, walkBackAnim.from, walkBackAnim.to, false);
-                }
-                else if
-                    (map["b"]) {
-                    //Samba!
-                    sambaAnim.start(true, 1.0, sambaAnim.from, sambaAnim.to, false);
-                }
-                else {
-                    //Walk
-                    walkAnim.start(true, 1.0, walkAnim.from, walkAnim.to, false);
-                }
-            }
-        }
-        else {
+        // if (keydown) {
+        //     if (!animating) {
+        //         animating = true;
+        //         if (map["g"]) {
+        //             //Walk backwards
+        //             walkBackAnim.start(true, 1.0, walkBackAnim.from, walkBackAnim.to, false);
+        //         }
+        //         else if
+        //             (map["b"]) {
+        //             //Samba!
+        //             sambaAnim.start(true, 1.0, sambaAnim.from, sambaAnim.to, false);
+        //         }
+        //         else {
+        //             //Walk
+        //             walkAnim.start(true, 1.0, walkAnim.from, walkAnim.to, false);
+        //         }
+        //     }
+        // }
+        // else {
 
-            if (animating) {
-                //Default animation is idle when no key is down     
-                idleAnim.start(true, 1.0, idleAnim.from, idleAnim.to, false);
+        //     if (animating) {
+        //         //Default animation is idle when no key is down     
+        //         idleAnim.start(true, 1.0, idleAnim.from, idleAnim.to, false);
 
-                //Stop all animations besides Idle Anim when no key is down
-                sambaAnim.stop();
-                walkAnim.stop();
-                walkBackAnim.stop();
+        //         //Stop all animations besides Idle Anim when no key is down
+        //         sambaAnim.stop();
+        //         walkAnim.stop();
+        //         walkBackAnim.stop();
 
-                //Ensure animation are played only once per rendering loop
-                animating = false;
-            }
-        }
+        //         //Ensure animation are played only once per rendering loop
+        //         animating = false;
+        //     }
+        // }
     });
 });
 
@@ -688,13 +692,22 @@ scene.registerBeforeRender(function() {
 // if((map["ArrowLeft"])){
 //     xr.baseExperience.camera.position = xr.baseExperience.camera.position.add(new BABYLON.Vector3(0, 0, -distance));
 // }
-var cameraByName = scene.getCameraByName(`camera-${room.sessionId}`);
+//var cameraByName = scene.getCameraByName(`camera-${room.sessionId}`);
+var cameraByName = scene.activeCamera;
+cameraByName.position.y = 2.5;
 if((map["ArrowUp"])){
   //console.log("1");
   if(cameraByName!= null){
     if(cameraByName.position && cameraByName.rotation){
-      cameraByName.position.z += 0.2 * Math.cos(cameraByName.rotation.y);
-      cameraByName.position.x += 0.2 * Math.sin(cameraByName.rotation.y);
+      // var intervalID = setInterval(function(){
+      //   console.log("ue");
+      //   cameraByName.position.z += 0.02 * Math.cos(cameraByName.rotation.y);
+      //   cameraByName.position.x += 0.02 * Math.sin(cameraByName.rotation.y);
+      // },10)
+      //console.log("ue");
+      
+      // cameraByName.position.z += 0.02 * Math.cos(cameraByName.rotation.y);
+      // cameraByName.position.x += 0.02 * Math.sin(cameraByName.rotation.y);
     }
     //camera_id.translate(BABYLON.Axis.Y, distance, BABYLON.Space.WORLD);
     //camera_id.position.z += 0.3;
@@ -704,8 +717,8 @@ if((map["ArrowUp"])){
 if((map["ArrowDown"])){
   if(cameraByName!= null){
     if(cameraByName.position && cameraByName.rotation){
-      cameraByName.position.z -= 0.2 * Math.cos(cameraByName.rotation.y);
-      cameraByName.position.x -= 0.2 * Math.sin(cameraByName.rotation.y);
+      // cameraByName.position.z -= 0.02 * Math.cos(cameraByName.rotation.y);
+      // cameraByName.position.x -= 0.02 * Math.sin(cameraByName.rotation.y);
     }
     //camera_id.translate(BABYLON.Axis.Y, -distance, BABYLON.Space.WORLD);
     //Math.cos(camera_id.rotation.y)
@@ -716,8 +729,8 @@ if((map["ArrowDown"])){
 if((map["ArrowRight"])){
   if(cameraByName!= null){
     if(cameraByName.position && cameraByName.rotation){
-      cameraByName.position.x += 0.2 * Math.cos(cameraByName.rotation.y);
-      cameraByName.position.z -= 0.2 * Math.sin(cameraByName.rotation.y);
+      // cameraByName.position.x += 0.02 * Math.cos(cameraByName.rotation.y);
+      // cameraByName.position.z -= 0.02 * Math.sin(cameraByName.rotation.y);
     }
     //camera_id.translate(BABYLON.Axis.X, distance, BABYLON.Space.WORLD);
   }
@@ -726,8 +739,8 @@ if((map["ArrowRight"])){
 if((map["ArrowLeft"])){
   if(cameraByName!= null){
     if(cameraByName.position && cameraByName.rotation){
-      cameraByName.position.x -= 0.2 * Math.cos(cameraByName.rotation.y);
-      cameraByName.position.z += 0.2 * Math.sin(cameraByName.rotation.y);
+      // cameraByName.position.x -= 0.02 * Math.cos(cameraByName.rotation.y);
+      // cameraByName.position.z += 0.02 * Math.sin(cameraByName.rotation.y);
     }
     //camera_id.translate(BABYLON.Axis.X, distance, BABYLON.Space.WORLD);
   }
@@ -1248,7 +1261,7 @@ var buildScene = async function (scene) {
       // //var camera_id = new BABYLON.FreeCamera(`camera-${sessionId}`, Math.PI / 2, 1.0, 550, scene);
       // camera_id.rotation =new BABYLON.Vector3(Math.PI/2, Math.PI/2, 0);
       camera_id.attachControl(canvas, true);
-      camera_id.inputs.removeByType('FreeCameraKeyboardMoveInput'); // 既存のキーボード入力をクリア
+      //camera_id.inputs.removeByType('FreeCameraKeyboardMoveInput'); // 既存のキーボード入力をクリア
       scene.addCamera(camera_id);
       if(sessionId === room.sessionId){
         scene.activeCamera = camera_id;
@@ -1265,33 +1278,50 @@ var buildScene = async function (scene) {
 
       BABYLON.SceneLoader.ImportMesh("", "https://assets.babylonjs.com/meshes/", "HVGirl.glb", scene, function (newMeshes, particleSystems, skeletons, animationGroups) {
         for(var i =0; i<newMeshes.length; i++){
-          newMeshes[i].name = "space";
-         }
-        var sphere = newMeshes[0];
+          newMeshes[i].name = "room";
+          newMeshes[i].visibility =1.0;
+        }
+        animationGroups[0].name = `Idle-${sessionId}`;
+        animationGroups[1].name = `Samba-${sessionId}`;
+        animationGroups[2].name = `Walking-${sessionId}`;
+        animationGroups[3].name = `WalkingBack-${sessionId}`;
+
+        var transformNode = newMeshes[1].parent.parent;
+        transformNode.position.y = -15;
+        // transformNode.freezeWorldMatrix = false;
+
+// rotation を変更
+//transformNode.rotation = new BABYLON.Vector3(Math.PI / 2, Math.PI, 0);
+
+// 変換を再び凍結
+//transformNode.freezeWorldMatrix = true;
+        //transformNode.rotation.set(90, 180, 0);
+        sphere = newMeshes[0];
         sphere.name = `player-${sessionId}`;
         //sphere.scaling = new BABYLON.Vector3(0.5, 0.5, 0.5);
         //sphere.material.alpha =0.5;
-        sphere.position.x = camera_id.position.x;
-        sphere.position.z = camera_id.position.z;
-        sphere.rotation = camera_id.rotation;
+        // sphere.position.x = camera_id.position.x;
+        // sphere.position.z = camera_id.position.z;
+        sphere.position = camera_id.position;
+        //sphere.rotation.y = camera_id.rotation.y;
         sphereEntities[sessionId] = sphere;
 
-      sphere.position = new BABYLON.Vector3(0, -9, 0);
+      //sphere.position = new BABYLON.Vector3(0, -9, 0);
       //Scale the model down        
-      sphere.scaling.scaleInPlace(0.3);
+      sphere.scaling.scaleInPlace(0.6);
 
       //Lock camera on the character 
 
     //Hero character variables 
-    var heroSpeed = 0.1;
-    var heroSpeedBackwards = 0.1;
-    var heroRotationSpeed = 0.03;
-    var animating = true;
+    // var heroSpeed = 0.1;
+    // var heroSpeedBackwards = 0.1;
+    // var heroRotationSpeed = 0.03;
+    // var animating = true;
 
-    const walkAnim = scene.getAnimationGroupByName("Walking");
-    const walkBackAnim = scene.getAnimationGroupByName("WalkingBack");
-    const idleAnim = scene.getAnimationGroupByName("Idle");
-    const sambaAnim = scene.getAnimationGroupByName("Samba");
+    // const walkAnim = scene.getAnimationGroupByName("Walking");
+    // const walkBackAnim = scene.getAnimationGroupByName("WalkingBack");
+    // const idleAnim = scene.getAnimationGroupByName("Idle");
+    // const sambaAnim = scene.getAnimationGroupByName("Samba");
 
     
 
@@ -1395,6 +1425,12 @@ var buildScene = async function (scene) {
       //sphereEntities[sessionId] = sphere;
       id_textEntities[sessionId] = id_text.text;
       textPosition[sessionId] = text;
+      animating[sessionId] = true;
+      walkAnim[sessionId] = scene.getAnimationGroupByName(`Walking-${sessionId}`);
+      walkBackAnim[sessionId] = scene.getAnimationGroupByName(`WalkingBack-${sessionId}`);
+      idleAnim[sessionId] = scene.getAnimationGroupByName(`Idle-${sessionId}`);
+      sambaAnim[sessionId] = scene.getAnimationGroupByName(`Samba-${sessionId}`);
+
 
       if(pickedMesh.position && pickedMesh.rotation && pickedMesh.scaling){
         modelNextPosition[pickedMesh.name] = pickedMesh.position;
@@ -1474,9 +1510,17 @@ var buildScene = async function (scene) {
   //
 
   //window.addEventListener("keydown", function (event) {
+  scene.registerBeforeRender(function() {	
+    var playerByName = scene.getMeshByName(`player-${room.sessionId}`);
+    if (playerByName) {
+    hideAllChildren(playerByName);
+    playerByName.rotation.x = 0;
+    }
+  })
   scene.registerAfterRender(function() {	
     //var targetPosition = pointer.pickedPoint.clone();
     var playerByName = scene.getMeshByName(`player-${room.sessionId}`);
+
     var objectByName = scene.getCameraByName(`camera-${room.sessionId}`);
     if(xr_Check == 1){
        //objectByName.position = xr.baseExperience.camera.position;
@@ -1491,7 +1535,8 @@ var buildScene = async function (scene) {
         //var objectByName = scene.getCameraByName(`camera-${room.sessionId}`);
         //objectByName.position = camera_id.position;
         playerByName.position = objectByName.position;
-        playerByName.rotation.y = objectByName.rotation.y;
+        //playerByName.rotation.y = objectByName.rotation.y;
+        playerByName.rotation = new BABYLON.Vector3(0, objectByName.rotation.y, 0);
         //playerByName.rotation.x = 0;
         //playerByName.scaling = new BABYLON.Vector3(0.3, 0.3, 0.3);
         //SphereByName.material.alpha =0.5;
@@ -1543,11 +1588,44 @@ var buildScene = async function (scene) {
           
           entity.position = BABYLON.Vector3.Lerp(entity.position, targetPosition, 0.5);
           entity.rotation = BABYLON.Vector3.Lerp(entity.rotation, targetRotation, 0.5);
+
           //entity.position = targetPosition;
           //entity.rotation = targetRotation;
           if(sphereentity && sphereentity.position && sphereentity.rotation){
-            sphereentity.position = entity.position;
-            sphereentity.rotation.y = entity.rotation.y;
+            // var walkAnim = scene.getAnimationGroupByName(`Walking-${sessionId}`);
+            // var idleAnim = scene.getAnimationGroupByName(`Idle-${sessionId}`);
+            walkAnim[sessionId] = scene.getAnimationGroupByName(`Walking-${sessionId}`);
+            idleAnim[sessionId] = scene.getAnimationGroupByName(`Idle-${sessionId}`);
+            // if((walkAnim[sessionId])&&(idleAnim[sessionId])){
+            if ((sphereentity.position.x!=entity.position.x)||(sphereentity.position.z!=entity.position.z)||(sphereentity.rotation.y!=entity.rotation.y+Math.PI)) {
+              if (!animating[sessionId]) {
+                  animating[sessionId] = true;
+                  walkAnim[sessionId].start(true, 1.0, walkAnim[sessionId].from, walkAnim[sessionId].to, false); 
+                  console.log("move");         
+              }
+            }
+            else {
+              if (animating[sessionId]) {
+                  //Default animation is idle when no key is down     
+                  idleAnim[sessionId].start(true, 1.0, idleAnim[sessionId].from, idleAnim[sessionId].to, false);
+                  //Stop all animations besides Idle Anim when no key is down
+                  walkAnim[sessionId].stop();
+                  //Ensure animation are played only once per rendering loop
+                  animating[sessionId] = false;
+                  console.log("nonmove"); 
+              }
+            }
+            // }
+            sphereentity.position = new BABYLON.Vector3(entity.position.x, entity.position.y-2.0, entity.position.z);
+            
+            // sphereentity.rotation.y = entity.rotation.y;
+            // sphereentity.rotation.x = 0;
+            // sphereentity.rotation.z = 0;
+            sphereentity.rotation = new BABYLON.Vector3(0, entity.rotation.y+Math.PI, 0);
+
+            // sphereentity.rotation.x = 0;
+            // sphereentity.rotation.z = 0;
+
             //sphereentity.rotation.x = 0;
           }
           //sphereentity.scaling = new BABYLON.Vector3(0.3, 0.3, 0.3);

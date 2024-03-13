@@ -140,7 +140,7 @@ var jsArray1 = <?php echo json_encode($phpArray1); ?>;
 var jsArray2 = <?php echo json_encode($phpArray2); ?>;
 </script>
     <!-- <script type="text/javascript" src=js/script.js></script> -->
-    <script type="text/javascript" src=Metaverse_Babylon/js/webxr.js></script>
+    <script type="text/javascript" src=Metaverse_Babylon/js/webxr2.js></script>
     <!-- <iframe width="560" height="315" src="https://www.youtube.com/embed/s-SqVc3IkmI" frameborder="0" allowfullscreen></iframe> -->
     <!-- <iframe width="560" height="315" src="https://www.youtube.com/embed/s-SqVc3IkmI?si=09dC32DjRPCX4cWC" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe> -->
 </body>
