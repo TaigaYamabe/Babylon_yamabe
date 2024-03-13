@@ -248,92 +248,92 @@ var distance = 0.01;
 
 
 // Load hero character
-BABYLON.SceneLoader.ImportMesh("", "https://assets.babylonjs.com/meshes/", "HVGirl.glb", scene, function (newMeshes, particleSystems, skeletons, animationGroups) {
-    var hero = newMeshes[0];
-    hero.position = new BABYLON.Vector3(0, -9, 0);
-    for(var i =0; i<newMeshes.length; i++){
-      newMeshes[i].name = "space";
-    }
-    //Scale the model down        
-    hero.scaling.scaleInPlace(0.6);
+// BABYLON.SceneLoader.ImportMesh("", "https://assets.babylonjs.com/meshes/", "HVGirl.glb", scene, function (newMeshes, particleSystems, skeletons, animationGroups) {
+//     var hero = newMeshes[0];
+//     hero.position = new BABYLON.Vector3(0, -9, 0);
+//     for(var i =0; i<newMeshes.length; i++){
+//       newMeshes[i].name = "space";
+//     }
+//     //Scale the model down        
+//     hero.scaling.scaleInPlace(0.6);
 
-    //Lock camera on the character 
+//     //Lock camera on the character 
 
-    //Hero character variables 
-    var heroSpeed = 0.1;
-    var heroSpeedBackwards = 0.1;
-    var heroRotationSpeed = 0.03;
-    var animating = true;
+//     //Hero character variables 
+//     var heroSpeed = 0.1;
+//     var heroSpeedBackwards = 0.1;
+//     var heroRotationSpeed = 0.03;
+//     var animating = true;
 
-    const walkAnim = scene.getAnimationGroupByName("Walking");
-    const walkBackAnim = scene.getAnimationGroupByName("WalkingBack");
-    const idleAnim = scene.getAnimationGroupByName("Idle");
-    const sambaAnim = scene.getAnimationGroupByName("Samba");
+//     const walkAnim = scene.getAnimationGroupByName("Walking");
+//     const walkBackAnim = scene.getAnimationGroupByName("WalkingBack");
+//     const idleAnim = scene.getAnimationGroupByName("Idle");
+//     const sambaAnim = scene.getAnimationGroupByName("Samba");
 
     
 
-    //Rendering loop (executed for everyframe)
-    scene.registerBeforeRender(function() {	
-    //scene.onBeforeRenderObservable.add(() => {
-        var keydown = false;
-        //Manage the movements of the character (e.g. position, direction)
-        if (map["t"]) {
-          //console.log("t");
-            hero.moveWithCollisions(hero.forward.scaleInPlace(heroSpeed));
-            keydown = true;
-        }
-        if (map["g"]) {
-            hero.moveWithCollisions(hero.forward.scaleInPlace(-heroSpeedBackwards));
-            keydown = true;
-        }
-        if (map["f"]) {
-            hero.rotate(BABYLON.Vector3.Up(), -heroRotationSpeed);
-            keydown = true;
-        }
-        if (map["h"]) {
-            hero.rotate(BABYLON.Vector3.Up(), heroRotationSpeed);
-            keydown = true;
-        }
-        if (map["b"]) {
-            keydown = true;
-        }
+//     //Rendering loop (executed for everyframe)
+//     scene.registerBeforeRender(function() {	
+//     //scene.onBeforeRenderObservable.add(() => {
+//         var keydown = false;
+//         //Manage the movements of the character (e.g. position, direction)
+//         if (map["t"]) {
+//           //console.log("t");
+//             hero.moveWithCollisions(hero.forward.scaleInPlace(heroSpeed));
+//             keydown = true;
+//         }
+//         if (map["g"]) {
+//             hero.moveWithCollisions(hero.forward.scaleInPlace(-heroSpeedBackwards));
+//             keydown = true;
+//         }
+//         if (map["f"]) {
+//             hero.rotate(BABYLON.Vector3.Up(), -heroRotationSpeed);
+//             keydown = true;
+//         }
+//         if (map["h"]) {
+//             hero.rotate(BABYLON.Vector3.Up(), heroRotationSpeed);
+//             keydown = true;
+//         }
+//         if (map["b"]) {
+//             keydown = true;
+//         }
 
-        //Manage animations to be played  
-        if (keydown) {
-            if (!animating) {
-                animating = true;
-                if (map["g"]) {
-                    //Walk backwards
-                    walkBackAnim.start(true, 1.0, walkBackAnim.from, walkBackAnim.to, false);
-                }
-                else if
-                    (map["b"]) {
-                    //Samba!
-                    sambaAnim.start(true, 1.0, sambaAnim.from, sambaAnim.to, false);
-                }
-                else {
-                    //Walk
-                    walkAnim.start(true, 1.0, walkAnim.from, walkAnim.to, false);
-                }
-            }
-        }
-        else {
+//         //Manage animations to be played  
+//         if (keydown) {
+//             if (!animating) {
+//                 animating = true;
+//                 if (map["g"]) {
+//                     //Walk backwards
+//                     walkBackAnim.start(true, 1.0, walkBackAnim.from, walkBackAnim.to, false);
+//                 }
+//                 else if
+//                     (map["b"]) {
+//                     //Samba!
+//                     sambaAnim.start(true, 1.0, sambaAnim.from, sambaAnim.to, false);
+//                 }
+//                 else {
+//                     //Walk
+//                     walkAnim.start(true, 1.0, walkAnim.from, walkAnim.to, false);
+//                 }
+//             }
+//         }
+//         else {
 
-            if (animating) {
-                //Default animation is idle when no key is down     
-                idleAnim.start(true, 1.0, idleAnim.from, idleAnim.to, false);
+//             if (animating) {
+//                 //Default animation is idle when no key is down     
+//                 idleAnim.start(true, 1.0, idleAnim.from, idleAnim.to, false);
 
-                //Stop all animations besides Idle Anim when no key is down
-                sambaAnim.stop();
-                walkAnim.stop();
-                walkBackAnim.stop();
+//                 //Stop all animations besides Idle Anim when no key is down
+//                 sambaAnim.stop();
+//                 walkAnim.stop();
+//                 walkBackAnim.stop();
 
-                //Ensure animation are played only once per rendering loop
-                animating = false;
-            }
-        }
-    });
-});
+//                 //Ensure animation are played only once per rendering loop
+//                 animating = false;
+//             }
+//         }
+//     });
+// });
 
 
 
