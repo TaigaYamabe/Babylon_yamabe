@@ -17,6 +17,7 @@ var modelNextPosition = {};
 var modelNextRotation = {};
 var modelNextScaling = {};
 var id_textNext = {};
+var move ={};
 
 //Hero character variables 
 var heroSpeed = 0.1;
@@ -115,7 +116,7 @@ function NotColorAllChildren(parentNode) {
 // var originalString = "123-example123";
 // var result = removeEndDigits(originalString);
 // console.log(result); // "example"
-var num = 1;
+var num = 4;
 xr = await scene.createDefaultXRExperienceAsync({
   //floorMeshes: [environment.ground] /* Array of meshes to be used as landing points */
 });
@@ -1235,9 +1236,7 @@ var buildScene = async function (scene) {
   // 
   room.state.players.onAdd((player, sessionId) => {
       //var isCurrentPlayer = (sessionId === room.sessionId);
-
-
-      camera_id = new BABYLON.FreeCamera(`camera-${sessionId}`, new BABYLON.Vector3(0, 2.5, 25), scene);
+      camera_id = new BABYLON.FreeCamera(`camera-${sessionId}`, new BABYLON.Vector3(Math.random()*40-20, 2.5, Math.random()*40+15), scene);
       //var camera_id = new BABYLON.FreeCamera(`camera-${sessionId}`, Math.PI / 2, 1.0, 550, scene);
       camera_id.rotation =new BABYLON.Vector3(0, Math.PI, 0);
       var advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
@@ -1419,6 +1418,7 @@ var buildScene = async function (scene) {
 
       // Set player spawning position
 
+      for(var i=0;i<100;i++){move[sessionId+i] = 0;}
       playerEntities[sessionId] = camera_id;
       playerNextPosition[sessionId] = camera_id.position.clone();
       playerNextRotation[sessionId] = camera_id.rotation.clone();
@@ -1527,7 +1527,6 @@ var buildScene = async function (scene) {
        //objectByName.rotation = xr.baseExperience.camera.rotation;
        objectByName.position = BABYLON.Vector3.Lerp(objectByName.position, xr.baseExperience.camera.position, 0.5);
        objectByName.rotation = BABYLON.Vector3.Lerp(objectByName.rotation, xr.baseExperience.camera.rotation, 0.5);
-       objectByName.position.y -= 1.0;
     }
     //var objectByName = xr.baseExperience.camera;
     //var objectByName = scene.activeCamera;
@@ -1588,16 +1587,31 @@ var buildScene = async function (scene) {
           
           entity.position = BABYLON.Vector3.Lerp(entity.position, targetPosition, 0.5);
           entity.rotation = BABYLON.Vector3.Lerp(entity.rotation, targetRotation, 0.5);
+          if(sphereentity && sphereentity.position && sphereentity.rotation){
+          //移動平均の計算
+          var move_total = 0;
+          var move_average = 0;
+          move[sessionId+0]=Math.sqrt((sphereentity.position.x-entity.position.x)*(sphereentity.position.x-entity.position.x)+(sphereentity.position.z-entity.position.z)*(sphereentity.position.z-entity.position.z));
+          for(var i=0; i<99; i++){
+            move[sessionId+99-i]=move[sessionId+98-i]
+          }
+          for(var i=0; i<100; i++){
+            move_total+=move[sessionId+i]
+          }
+          move_average = move_total/100;
+          //console.log(move_average);
+
 
           //entity.position = targetPosition;
           //entity.rotation = targetRotation;
-          if(sphereentity && sphereentity.position && sphereentity.rotation){
             // var walkAnim = scene.getAnimationGroupByName(`Walking-${sessionId}`);
             // var idleAnim = scene.getAnimationGroupByName(`Idle-${sessionId}`);
             walkAnim[sessionId] = scene.getAnimationGroupByName(`Walking-${sessionId}`);
             idleAnim[sessionId] = scene.getAnimationGroupByName(`Idle-${sessionId}`);
             // if((walkAnim[sessionId])&&(idleAnim[sessionId])){
-            if (Math.abs(sphereentity.position.x-entity.position.x)>0.01||Math.abs(sphereentity.position.z-entity.position.z)>0.01||Math.abs(sphereentity.rotation.y-(entity.rotation.y+Math.PI))>0.01) {
+            //if (Math.abs(sphereentity.position.x-entity.position.x)>0.01||Math.abs(sphereentity.position.z-entity.position.z)>0.01||Math.abs(sphereentity.rotation.y-(entity.rotation.y+Math.PI))>0.01) {
+            //if (Math.sqrt((sphereentity.position.x-entity.position.x)*(sphereentity.position.x-entity.position.x)+(sphereentity.position.z-entity.position.z)*(sphereentity.position.z-entity.position.z))>0.002||Math.abs(sphereentity.rotation.y-(entity.rotation.y+Math.PI))>0.01) {
+            if (move_average>0.00001||Math.abs(sphereentity.rotation.y-(entity.rotation.y+Math.PI))>1) {
               if (!animating[sessionId]) {
                   animating[sessionId] = true;
                   walkAnim[sessionId].start(true, 1.0, walkAnim[sessionId].from, walkAnim[sessionId].to, false); 
