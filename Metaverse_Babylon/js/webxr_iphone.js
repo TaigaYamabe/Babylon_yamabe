@@ -52,6 +52,7 @@ document.head.appendChild(externalScript);
 
 var loadingText = new BABYLON.GUI.TextBlock("instructions");
 var id_text= new BABYLON.GUI.TextBlock("instructions");
+
 var createScene = async function () {
 var scene = new BABYLON.Scene(engine);
 var non_vr_camera = new BABYLON.FreeCamera("camera", new BABYLON.Vector3(0, 2.5, 25), scene);
@@ -119,44 +120,44 @@ function NotColorAllChildren(parentNode) {
 // console.log(result); // "example"
 var num = 4;
 try{
-xr = await scene.createDefaultXRExperienceAsync({
-  //floorMeshes: [environment.ground] /* Array of meshes to be used as landing points */
-});
+// xr = await scene.createDefaultXRExperienceAsync({
+//   //floorMeshes: [environment.ground] /* Array of meshes to be used as landing points */
+// });
 box = BABYLON.MeshBuilder.CreateBox("box", {height: 1, width: 0.75, depth: 0.25});
 //xr.baseExperience.camera.name = "aw";
-xr.teleportation.detach();
-xr.baseExperience.onStateChangedObservable.add((state)=>{
-  if(state === BABYLON.WebXRState.IN_XR){
-    xr_Check = 1;
-    // box.rotation = xr.baseExperience.camera.rotation;
-    xrCamera = xr.baseExperience.camera;
-    // playerEntities[sessionId] = xr.baseExperience.camera;
-    // playerNextPosition[sessionId] = xr.baseExperience.camera.position.clone();
-    // playerNextRotation[sessionId] = xr.baseExperience.camera.rotation.clone();
-    //console.log('WebXR camera position(before_enteringVR): '+xr.baseExperience.camera.position);
-    xr.baseExperience.camera.position = camera_id.position;
-    xr.baseExperience.camera.rotation =new BABYLON.Vector3(0, Math.PI, 0);
-    //console.log('WebXR camera position(after_enteringVR): '+xr.baseExperience.camera.position);
+// xr.teleportation.detach();
+// xr.baseExperience.onStateChangedObservable.add((state)=>{
+//   if(state === BABYLON.WebXRState.IN_XR){
+//     xr_Check = 1;
+//     // box.rotation = xr.baseExperience.camera.rotation;
+//     xrCamera = xr.baseExperience.camera;
+//     // playerEntities[sessionId] = xr.baseExperience.camera;
+//     // playerNextPosition[sessionId] = xr.baseExperience.camera.position.clone();
+//     // playerNextRotation[sessionId] = xr.baseExperience.camera.rotation.clone();
+//     //console.log('WebXR camera position(before_enteringVR): '+xr.baseExperience.camera.position);
+//     xr.baseExperience.camera.position = camera_id.position;
+//     xr.baseExperience.camera.rotation =new BABYLON.Vector3(0, Math.PI, 0);
+//     //console.log('WebXR camera position(after_enteringVR): '+xr.baseExperience.camera.position);
   
-  }        
-  else if (state === BABYLON.WebXRState.NOT_IN_XR) {
-    // XRモードから出たときの処理
-    // ここに特定の処理を追加
-    xr_Check = 0;
-    camera_id.position = xr.baseExperience.camera.position;
-    camera_id.rotation = xr.baseExperience.camera.rotation;
-    // playerEntities[sessionId] = camera_id;
-    // playerNextPosition[sessionId] = camera_id.position.clone();
-    // playerNextRotation[sessionId] = camera_id.rotation.clone();
-    //camera_id = scene.getCameraByName(`camera-${room.sessionId}`);
-    plane1.setEnabled(false);
-    plane2.setEnabled(false);
-    plane3.setEnabled(false);
-    plane4.setEnabled(false);
-    NotColorAllChildren(pickedMesh);
-    console.log('Left XR mode. Performing cleanup or additional actions.');
-  }
-});
+//   }        
+//   else if (state === BABYLON.WebXRState.NOT_IN_XR) {
+//     // XRモードから出たときの処理
+//     // ここに特定の処理を追加
+//     xr_Check = 0;
+//     camera_id.position = xr.baseExperience.camera.position;
+//     camera_id.rotation = xr.baseExperience.camera.rotation;
+//     // playerEntities[sessionId] = camera_id;
+//     // playerNextPosition[sessionId] = camera_id.position.clone();
+//     // playerNextRotation[sessionId] = camera_id.rotation.clone();
+//     //camera_id = scene.getCameraByName(`camera-${room.sessionId}`);
+//     plane1.setEnabled(false);
+//     plane2.setEnabled(false);
+//     plane3.setEnabled(false);
+//     plane4.setEnabled(false);
+//     NotColorAllChildren(pickedMesh);
+//     console.log('Left XR mode. Performing cleanup or additional actions.');
+//   }
+// });
 
 //ホワイトボードのテクスチャ部分------------------------------------------------------------------------------------
 var plane = BABYLON.MeshBuilder.CreatePlane("space", { size: 5 }, scene);
@@ -349,66 +350,66 @@ var distance = 0.01;
 
 
 //WebXRのUI部分------------------------------------------------------------------------------------------------------
-var plane1 = BABYLON.MeshBuilder.CreatePlane("plane1", { size: 5 }, scene);
-// テクスチャの作成と割り当て
-var texture = new BABYLON.Texture("./Metaverse_Babylon/texture/移動.png", scene);
-var material = new BABYLON.StandardMaterial("material", scene);
-material.diffuseTexture = texture;
-plane1.material = material;
-plane1.position = new BABYLON.Vector3(0.5, 0.32, 1);
-plane1.scaling = new BABYLON.Vector3(0.06, 0.06, 1);
-plane1.rotation =new BABYLON.Vector3(0, 0, 0);
-// plane1.position = new BABYLON.Vector3(-5, 0, 0);
-// plane1.scaling = new BABYLON.Vector3(0.4, 0.4, 1);
-// plane1.rotation =new BABYLON.Vector3(0, Math.PI, 0);
-//plane1.parent = non_vr_camera;
-plane1.parent =xr.baseExperience.camera;
+// var plane1 = BABYLON.MeshBuilder.CreatePlane("plane1", { size: 5 }, scene);
+// // テクスチャの作成と割り当て
+// var texture = new BABYLON.Texture("./Metaverse_Babylon/texture/移動.png", scene);
+// var material = new BABYLON.StandardMaterial("material", scene);
+// material.diffuseTexture = texture;
+// plane1.material = material;
+// plane1.position = new BABYLON.Vector3(0.5, 0.32, 1);
+// plane1.scaling = new BABYLON.Vector3(0.06, 0.06, 1);
+// plane1.rotation =new BABYLON.Vector3(0, 0, 0);
+// // plane1.position = new BABYLON.Vector3(-5, 0, 0);
+// // plane1.scaling = new BABYLON.Vector3(0.4, 0.4, 1);
+// // plane1.rotation =new BABYLON.Vector3(0, Math.PI, 0);
+// //plane1.parent = non_vr_camera;
+// plane1.parent =xr.baseExperience.camera;
 
-var plane2 = BABYLON.MeshBuilder.CreatePlane("plane2", { size: 5 }, scene);
-// テクスチャの作成と割り当て
-var texture = new BABYLON.Texture("./Metaverse_Babylon/texture/回転.png", scene);
-var material = new BABYLON.StandardMaterial("material", scene);
-material.diffuseTexture = texture;
-plane2.material = material;
-plane2.position = new BABYLON.Vector3(0.5, 0.06, 1);
-plane2.scaling = new BABYLON.Vector3(0.05, 0.05, 1);
-plane2.rotation =new BABYLON.Vector3(0, 0, 0);
-//plane2.position = new BABYLON.Vector3(5, 0, 0);
-//plane2.scaling = new BABYLON.Vector3(0.4, 0.4, 1);
-//plane2.rotation =new BABYLON.Vector3(0, Math.PI, 0);
-//plane2.parent = non_vr_camera;
-plane2.parent =xr.baseExperience.camera;
+// var plane2 = BABYLON.MeshBuilder.CreatePlane("plane2", { size: 5 }, scene);
+// // テクスチャの作成と割り当て
+// var texture = new BABYLON.Texture("./Metaverse_Babylon/texture/回転.png", scene);
+// var material = new BABYLON.StandardMaterial("material", scene);
+// material.diffuseTexture = texture;
+// plane2.material = material;
+// plane2.position = new BABYLON.Vector3(0.5, 0.06, 1);
+// plane2.scaling = new BABYLON.Vector3(0.05, 0.05, 1);
+// plane2.rotation =new BABYLON.Vector3(0, 0, 0);
+// //plane2.position = new BABYLON.Vector3(5, 0, 0);
+// //plane2.scaling = new BABYLON.Vector3(0.4, 0.4, 1);
+// //plane2.rotation =new BABYLON.Vector3(0, Math.PI, 0);
+// //plane2.parent = non_vr_camera;
+// plane2.parent =xr.baseExperience.camera;
 
-var plane3 = BABYLON.MeshBuilder.CreatePlane("plane3", { size: 5 }, scene);
-// テクスチャの作成と割り当て
-var texture = new BABYLON.Texture("./Metaverse_Babylon/texture/削除.jpeg", scene);
-var material = new BABYLON.StandardMaterial("material", scene);
-material.diffuseTexture = texture;
-plane3.material = material;
-plane3.position = new BABYLON.Vector3(0.5, -0.2, 1);
-plane3.scaling = new BABYLON.Vector3(0.05, 0.05, 1);
-plane3.rotation =new BABYLON.Vector3(0, 0, 0);
-// plane3.position = new BABYLON.Vector3(0, 0, 0);
-// plane3.scaling = new BABYLON.Vector3(0.4, 0.4, 1);
-// plane3.rotation =new BABYLON.Vector3(0, Math.PI, 0);
-//plane3.parent = non_vr_camera;
-plane3.parent =xr.baseExperience.camera;
+// var plane3 = BABYLON.MeshBuilder.CreatePlane("plane3", { size: 5 }, scene);
+// // テクスチャの作成と割り当て
+// var texture = new BABYLON.Texture("./Metaverse_Babylon/texture/削除.jpeg", scene);
+// var material = new BABYLON.StandardMaterial("material", scene);
+// material.diffuseTexture = texture;
+// plane3.material = material;
+// plane3.position = new BABYLON.Vector3(0.5, -0.2, 1);
+// plane3.scaling = new BABYLON.Vector3(0.05, 0.05, 1);
+// plane3.rotation =new BABYLON.Vector3(0, 0, 0);
+// // plane3.position = new BABYLON.Vector3(0, 0, 0);
+// // plane3.scaling = new BABYLON.Vector3(0.4, 0.4, 1);
+// // plane3.rotation =new BABYLON.Vector3(0, Math.PI, 0);
+// //plane3.parent = non_vr_camera;
+// plane3.parent =xr.baseExperience.camera;
 
-var plane4 = BABYLON.MeshBuilder.CreatePlane("plane4", { size: 5 }, scene);
-// テクスチャの作成と割り当て
-var texture = new BABYLON.Texture("./Metaverse_Babylon/texture/カメラ.jpg", scene);
-var material = new BABYLON.StandardMaterial("material", scene);
-material.diffuseTexture = texture;
-plane4.material = material;
-plane4.position = new BABYLON.Vector3(0.5, -0.46, 1);
-plane4.scaling = new BABYLON.Vector3(0.05, 0.05, 1);
-plane4.rotation =new BABYLON.Vector3(0, 0, 0);
-plane4.parent =xr.baseExperience.camera;
+// var plane4 = BABYLON.MeshBuilder.CreatePlane("plane4", { size: 5 }, scene);
+// // テクスチャの作成と割り当て
+// var texture = new BABYLON.Texture("./Metaverse_Babylon/texture/カメラ.jpg", scene);
+// var material = new BABYLON.StandardMaterial("material", scene);
+// material.diffuseTexture = texture;
+// plane4.material = material;
+// plane4.position = new BABYLON.Vector3(0.5, -0.46, 1);
+// plane4.scaling = new BABYLON.Vector3(0.05, 0.05, 1);
+// plane4.rotation =new BABYLON.Vector3(0, 0, 0);
+// plane4.parent =xr.baseExperience.camera;
 
-plane1.setEnabled(false);
-plane2.setEnabled(false);
-plane3.setEnabled(false);
-plane4.setEnabled(false);
+// plane1.setEnabled(false);
+// plane2.setEnabled(false);
+// plane3.setEnabled(false);
+// plane4.setEnabled(false);
 
 }catch (e) {
   console.log(e);
@@ -887,317 +888,317 @@ document.addEventListener("keydown", function (event) {
   });
 
   //コントローラキー入力
-  xr.input.onControllerAddedObservable.add((controller) => {
-    controller.onMotionControllerInitObservable.add((motionController) => {
-      //HMDの角度取得
-      // const xrFrame = xr.baseExperience.camera.baseExperience.sessionManager.currentFrame;
-      //   if (xrFrame) {
-      //       const viewerPose = xrFrame.getViewerPose();
-      //       if (viewerPose) {
-      //           const viewerTransform = viewerPose.transform;
-      //           // viewerTransformから姿勢データを取得して利用する
-      //           const position = viewerTransform.position;
-      //           const orientation = viewerTransform.orientation;
-      //           box.rotation = viewerTransform.rotation;
-      //           // カメラの向きや角度を更新するために姿勢データを利用する
-      //       }
-      //   }
+  // xr.input.onControllerAddedObservable.add((controller) => {
+  //   controller.onMotionControllerInitObservable.add((motionController) => {
+  //     //HMDの角度取得
+  //     // const xrFrame = xr.baseExperience.camera.baseExperience.sessionManager.currentFrame;
+  //     //   if (xrFrame) {
+  //     //       const viewerPose = xrFrame.getViewerPose();
+  //     //       if (viewerPose) {
+  //     //           const viewerTransform = viewerPose.transform;
+  //     //           // viewerTransformから姿勢データを取得して利用する
+  //     //           const position = viewerTransform.position;
+  //     //           const orientation = viewerTransform.orientation;
+  //     //           box.rotation = viewerTransform.rotation;
+  //     //           // カメラの向きや角度を更新するために姿勢データを利用する
+  //     //       }
+  //     //   }
 
-        if (motionController.handness === 'left') {
-             const xr_ids = motionController.getComponentIds();
-             let triggerComponent = motionController.getComponent(xr_ids[0]);//xr-standard-trigger
-             triggerComponent.onButtonStateChangedObservable.add(() => {
-                 if (triggerComponent.pressed) {
-                     //Box_Left_Trigger.scaling= new BABYLON.Vector3(1.2,1.2,1.2);
+  //       if (motionController.handness === 'left') {
+  //            const xr_ids = motionController.getComponentIds();
+  //            let triggerComponent = motionController.getComponent(xr_ids[0]);//xr-standard-trigger
+  //            triggerComponent.onButtonStateChangedObservable.add(() => {
+  //                if (triggerComponent.pressed) {
+  //                    //Box_Left_Trigger.scaling= new BABYLON.Vector3(1.2,1.2,1.2);
                  
-                 }else{
-                     //Box_Left_Trigger.scaling= new BABYLON.Vector3(1,1,1);
+  //                }else{
+  //                    //Box_Left_Trigger.scaling= new BABYLON.Vector3(1,1,1);
                  
-                 }
+  //                }
 
                  
-                 scene.onPointerObservable.add((pointerInfo) => {
-                  switch (pointerInfo.type) {
-                      case BABYLON.PointerEventTypes.POINTERDOWN:
-                          var pickResult = pointerInfo.pickInfo;
-                          if (pickResult.hit) {
-                            if(pickResult.pickedMesh == plane1){
-                              num =1;
-                              plane1.scaling = new BABYLON.Vector3(0.06, 0.06, 1);
-                              plane2.scaling = new BABYLON.Vector3(0.05, 0.05, 1);
-                              plane3.scaling = new BABYLON.Vector3(0.05, 0.05, 1);
-                              plane4.scaling = new BABYLON.Vector3(0.05, 0.05, 1);
-                              plane1.position = new BABYLON.Vector3(0.5, 0.32, 0.95);
-                              plane2.position = new BABYLON.Vector3(0.5, 0.06, 1);
-                              plane3.position = new BABYLON.Vector3(0.5,-0.20, 1);
-                              plane4.position = new BABYLON.Vector3(0.5,-0.46, 1);
-                            }
-                            else if(pickResult.pickedMesh == plane2){
-                              num=2;
-                              plane1.scaling = new BABYLON.Vector3(0.05, 0.05, 1);
-                              plane2.scaling = new BABYLON.Vector3(0.06, 0.06, 1);
-                              plane3.scaling = new BABYLON.Vector3(0.05, 0.05, 1);
-                              plane4.scaling = new BABYLON.Vector3(0.05, 0.05, 1);
-                              plane1.position = new BABYLON.Vector3(0.5, 0.32, 1);
-                              plane2.position = new BABYLON.Vector3(0.5, 0.06, 0.95);
-                              plane3.position = new BABYLON.Vector3(0.5,-0.20, 1);
-                              plane4.position = new BABYLON.Vector3(0.5,-0.46, 1);
-                            }
-                            else if(pickResult.pickedMesh == plane3){
-                              num=3;
-                              plane1.scaling = new BABYLON.Vector3(0.05, 0.05, 1);
-                              plane2.scaling = new BABYLON.Vector3(0.05, 0.05, 1);
-                              plane3.scaling = new BABYLON.Vector3(0.06, 0.06, 1);
-                              plane4.scaling = new BABYLON.Vector3(0.05, 0.05, 1);
-                              plane1.position = new BABYLON.Vector3(0.5, 0.32, 1);
-                              plane2.position = new BABYLON.Vector3(0.5, 0.06, 1);
-                              plane3.position = new BABYLON.Vector3(0.5,-0.20, 0.95);
-                              plane4.position = new BABYLON.Vector3(0.5,-0.46, 1);
-                            }
-                            else if(pickResult.pickedMesh == plane4){
-                              num=4;
-                              plane1.scaling = new BABYLON.Vector3(0.05, 0.05, 1);
-                              plane2.scaling = new BABYLON.Vector3(0.05, 0.05, 1);
-                              plane3.scaling = new BABYLON.Vector3(0.05, 0.05, 1);
-                              plane4.scaling = new BABYLON.Vector3(0.06, 0.06, 1);
-                              plane1.position = new BABYLON.Vector3(0.5, 0.32, 1);
-                              plane2.position = new BABYLON.Vector3(0.5, 0.06, 1);
-                              plane3.position = new BABYLON.Vector3(0.5,-0.20, 1);
-                              plane4.position = new BABYLON.Vector3(0.5,-0.46, 0.95);
-                            }
-                            else
-                            {
-                              if(pickResult.pickedMesh.name != "space" && !pickedMesh.isEnabled()){
-                                //console.log(removeEndDigits(pickResult.pickedMesh.name))
-                                pickedMesh =scene.getMeshByName(removeEndDigits(pickResult.pickedMesh.name));
-                                //pickedMesh = pickResult.pickedMesh;
-                                ColorAllChildren(pickedMesh);
-                                //pickResult.pickedMesh.material.emissiveColor = new BABYLON.Color3(0.3, 0.3, 0); // 例: 黄色
-                              }
-                              if(pickResult.pickedMesh.name != "space" && pickedMesh.isEnabled()){
-                                NotColorAllChildren(pickedMesh);
-                                //pickedMesh.material.emissiveColor = new BABYLON.Color3(0, 0, 0); 
-                                //pickedMesh = pickResult.pickedMesh;
-                                //console.log(removeEndDigits(pickResult.pickedMesh.name))
-                                pickedMesh =scene.getMeshByName(removeEndDigits(pickResult.pickedMesh.name));
-                                ColorAllChildren(pickedMesh);
-                                //pickResult.pickedMesh.material.emissiveColor = new BABYLON.Color3(0.3, 0.3, 0); // 例: 黄色
-                              }
-                              if(pickResult.pickedMesh.name == "space" && pickedMesh.isEnabled()){
-                                NotColorAllChildren(pickedMesh);
-                                //pickResult.pickedMesh.material.emissiveColor = new BABYLON.Color3(0, 0, 0); 
-                                pickedMesh=startCube;
-                              }                  
-                            }
-                          }
-                      break;
-                      }
+  //                scene.onPointerObservable.add((pointerInfo) => {
+  //                 switch (pointerInfo.type) {
+  //                     case BABYLON.PointerEventTypes.POINTERDOWN:
+  //                         var pickResult = pointerInfo.pickInfo;
+  //                         if (pickResult.hit) {
+  //                           if(pickResult.pickedMesh == plane1){
+  //                             num =1;
+  //                             plane1.scaling = new BABYLON.Vector3(0.06, 0.06, 1);
+  //                             plane2.scaling = new BABYLON.Vector3(0.05, 0.05, 1);
+  //                             plane3.scaling = new BABYLON.Vector3(0.05, 0.05, 1);
+  //                             plane4.scaling = new BABYLON.Vector3(0.05, 0.05, 1);
+  //                             plane1.position = new BABYLON.Vector3(0.5, 0.32, 0.95);
+  //                             plane2.position = new BABYLON.Vector3(0.5, 0.06, 1);
+  //                             plane3.position = new BABYLON.Vector3(0.5,-0.20, 1);
+  //                             plane4.position = new BABYLON.Vector3(0.5,-0.46, 1);
+  //                           }
+  //                           else if(pickResult.pickedMesh == plane2){
+  //                             num=2;
+  //                             plane1.scaling = new BABYLON.Vector3(0.05, 0.05, 1);
+  //                             plane2.scaling = new BABYLON.Vector3(0.06, 0.06, 1);
+  //                             plane3.scaling = new BABYLON.Vector3(0.05, 0.05, 1);
+  //                             plane4.scaling = new BABYLON.Vector3(0.05, 0.05, 1);
+  //                             plane1.position = new BABYLON.Vector3(0.5, 0.32, 1);
+  //                             plane2.position = new BABYLON.Vector3(0.5, 0.06, 0.95);
+  //                             plane3.position = new BABYLON.Vector3(0.5,-0.20, 1);
+  //                             plane4.position = new BABYLON.Vector3(0.5,-0.46, 1);
+  //                           }
+  //                           else if(pickResult.pickedMesh == plane3){
+  //                             num=3;
+  //                             plane1.scaling = new BABYLON.Vector3(0.05, 0.05, 1);
+  //                             plane2.scaling = new BABYLON.Vector3(0.05, 0.05, 1);
+  //                             plane3.scaling = new BABYLON.Vector3(0.06, 0.06, 1);
+  //                             plane4.scaling = new BABYLON.Vector3(0.05, 0.05, 1);
+  //                             plane1.position = new BABYLON.Vector3(0.5, 0.32, 1);
+  //                             plane2.position = new BABYLON.Vector3(0.5, 0.06, 1);
+  //                             plane3.position = new BABYLON.Vector3(0.5,-0.20, 0.95);
+  //                             plane4.position = new BABYLON.Vector3(0.5,-0.46, 1);
+  //                           }
+  //                           else if(pickResult.pickedMesh == plane4){
+  //                             num=4;
+  //                             plane1.scaling = new BABYLON.Vector3(0.05, 0.05, 1);
+  //                             plane2.scaling = new BABYLON.Vector3(0.05, 0.05, 1);
+  //                             plane3.scaling = new BABYLON.Vector3(0.05, 0.05, 1);
+  //                             plane4.scaling = new BABYLON.Vector3(0.06, 0.06, 1);
+  //                             plane1.position = new BABYLON.Vector3(0.5, 0.32, 1);
+  //                             plane2.position = new BABYLON.Vector3(0.5, 0.06, 1);
+  //                             plane3.position = new BABYLON.Vector3(0.5,-0.20, 1);
+  //                             plane4.position = new BABYLON.Vector3(0.5,-0.46, 0.95);
+  //                           }
+  //                           else
+  //                           {
+  //                             if(pickResult.pickedMesh.name != "space" && !pickedMesh.isEnabled()){
+  //                               //console.log(removeEndDigits(pickResult.pickedMesh.name))
+  //                               pickedMesh =scene.getMeshByName(removeEndDigits(pickResult.pickedMesh.name));
+  //                               //pickedMesh = pickResult.pickedMesh;
+  //                               ColorAllChildren(pickedMesh);
+  //                               //pickResult.pickedMesh.material.emissiveColor = new BABYLON.Color3(0.3, 0.3, 0); // 例: 黄色
+  //                             }
+  //                             if(pickResult.pickedMesh.name != "space" && pickedMesh.isEnabled()){
+  //                               NotColorAllChildren(pickedMesh);
+  //                               //pickedMesh.material.emissiveColor = new BABYLON.Color3(0, 0, 0); 
+  //                               //pickedMesh = pickResult.pickedMesh;
+  //                               //console.log(removeEndDigits(pickResult.pickedMesh.name))
+  //                               pickedMesh =scene.getMeshByName(removeEndDigits(pickResult.pickedMesh.name));
+  //                               ColorAllChildren(pickedMesh);
+  //                               //pickResult.pickedMesh.material.emissiveColor = new BABYLON.Color3(0.3, 0.3, 0); // 例: 黄色
+  //                             }
+  //                             if(pickResult.pickedMesh.name == "space" && pickedMesh.isEnabled()){
+  //                               NotColorAllChildren(pickedMesh);
+  //                               //pickResult.pickedMesh.material.emissiveColor = new BABYLON.Color3(0, 0, 0); 
+  //                               pickedMesh=startCube;
+  //                             }                  
+  //                           }
+  //                         }
+  //                     break;
+  //                     }
             
-              });
-             });
-             // ボタンが押された瞬間のみ反応するアクションを作成
+  //             });
+  //            });
+  //            // ボタンが押された瞬間のみ反応するアクションを作成
            
-             let squeezeComponent = motionController.getComponent(xr_ids[1]);//xr-standard-squeeze
-             squeezeComponent.onButtonStateChangedObservable.add((eventData) => {
-                 if (eventData.pressed && eventData.value === 1) {
-                  //console.log(eventData.value);
-                     //Box_Left_Squeeze.scaling= new BABYLON.Vector3(1.2,1.2,1.2);
-                     if (!plane1.isEnabled()) {
-                      //console.log("オブジェクトは非表示です。");
-                      plane1.setEnabled(true);
-                      plane2.setEnabled(true);
-                      plane3.setEnabled(true);
-                      plane4.setEnabled(true);
-                      // ここに非表示の場合の処理を記述
-                    }
-                    else{
-                      plane1.setEnabled(false);
-                      plane2.setEnabled(false);
-                      plane3.setEnabled(false);
-                      plane4.setEnabled(false);
-                    }
+  //            let squeezeComponent = motionController.getComponent(xr_ids[1]);//xr-standard-squeeze
+  //            squeezeComponent.onButtonStateChangedObservable.add((eventData) => {
+  //                if (eventData.pressed && eventData.value === 1) {
+  //                 //console.log(eventData.value);
+  //                    //Box_Left_Squeeze.scaling= new BABYLON.Vector3(1.2,1.2,1.2);
+  //                    if (!plane1.isEnabled()) {
+  //                     //console.log("オブジェクトは非表示です。");
+  //                     plane1.setEnabled(true);
+  //                     plane2.setEnabled(true);
+  //                     plane3.setEnabled(true);
+  //                     plane4.setEnabled(true);
+  //                     // ここに非表示の場合の処理を記述
+  //                   }
+  //                   else{
+  //                     plane1.setEnabled(false);
+  //                     plane2.setEnabled(false);
+  //                     plane3.setEnabled(false);
+  //                     plane4.setEnabled(false);
+  //                   }
                   
-                 }else{
-                     //Box_Left_Squeeze.scaling=new BABYLON.Vector3(1,1,1);
-                 }
-             });
-             let thumbstickComponent = motionController.getComponent(xr_ids[2]);//xr-standard-thumbstick
-             thumbstickComponent.onButtonStateChangedObservable.add(() => {
-                 if (thumbstickComponent.pressed) {
-                     //Box_Left_ThumbStick.scaling= new BABYLON.Vector3(1.2,1.2,1.2);
-                 }else{
-                     //Box_Left_ThumbStick.scaling=new BABYLON.Vector3(1,1,1);
-                 }
-             });
-             thumbstickComponent.onAxisValueChangedObservable.add((axes) => {
-                 if(num == 1){
-                  //Box_Left_ThumbStick.position.x += (axes.x)/100;
-                  //Box_Left_ThumbStick.position.y -= (axes.y)/100;
+  //                }else{
+  //                    //Box_Left_Squeeze.scaling=new BABYLON.Vector3(1,1,1);
+  //                }
+  //            });
+  //            let thumbstickComponent = motionController.getComponent(xr_ids[2]);//xr-standard-thumbstick
+  //            thumbstickComponent.onButtonStateChangedObservable.add(() => {
+  //                if (thumbstickComponent.pressed) {
+  //                    //Box_Left_ThumbStick.scaling= new BABYLON.Vector3(1.2,1.2,1.2);
+  //                }else{
+  //                    //Box_Left_ThumbStick.scaling=new BABYLON.Vector3(1,1,1);
+  //                }
+  //            });
+  //            thumbstickComponent.onAxisValueChangedObservable.add((axes) => {
+  //                if(num == 1){
+  //                 //Box_Left_ThumbStick.position.x += (axes.x)/100;
+  //                 //Box_Left_ThumbStick.position.y -= (axes.y)/100;
  
-                  pickedMesh.position.x -= (axes.x)/10;
-                  pickedMesh.position.y -= (axes.y)/10;
-                 }
-                 if(num == 2){
-                  //pickedMesh.rotation = pickedMesh.rotation.add(new BABYLON.Vector3((axes.y)/10, 0, 0));
-                  pickedMesh.rotation = pickedMesh.rotation.add(new BABYLON.Vector3(0, (axes.x)/10), 0);
-                 }
-                 if(num == 3){
-                  //pickedMesh.scaling = pickedMesh.scaling.scale(99/100);
-                  //pickedMesh.scaling = pickedMesh.scaling.add(new BABYLON.Vector3(-axes.x/10, axes.x/10, axes.x/10));
-                 }
-                 if(num == 4){
-                  xr.baseExperience.camera.position.x -= (axes.x)/10;
-                  xr.baseExperience.camera.position.z += (axes.y)/10;
-                 }
-                // console.log(values.x, values.y);
-             });
+  //                 pickedMesh.position.x -= (axes.x)/10;
+  //                 pickedMesh.position.y -= (axes.y)/10;
+  //                }
+  //                if(num == 2){
+  //                 //pickedMesh.rotation = pickedMesh.rotation.add(new BABYLON.Vector3((axes.y)/10, 0, 0));
+  //                 pickedMesh.rotation = pickedMesh.rotation.add(new BABYLON.Vector3(0, (axes.x)/10), 0);
+  //                }
+  //                if(num == 3){
+  //                 //pickedMesh.scaling = pickedMesh.scaling.scale(99/100);
+  //                 //pickedMesh.scaling = pickedMesh.scaling.add(new BABYLON.Vector3(-axes.x/10, axes.x/10, axes.x/10));
+  //                }
+  //                if(num == 4){
+  //                 xr.baseExperience.camera.position.x -= (axes.x)/10;
+  //                 xr.baseExperience.camera.position.z += (axes.y)/10;
+  //                }
+  //               // console.log(values.x, values.y);
+  //            });
 
              
-             function XrepeatFunction() {
-              if(num == 1){
-                pickedMesh.position.z += 0.03;
-              }
-              if(num == 2){
-                //pickedMesh.rotation = pickedMesh.rotation.add(new BABYLON.Vector3(0, -0.01, 0));
-                pickedMesh.scaling = pickedMesh.scaling.scale(99/100);
-              }
-              if(num == 3){
-                if(pickedMesh.name !== "cube"){
-                  for(var m =0; m<scene.meshes.length; m++){
-                    if(scene.meshes[m].isVisible == false){
-                      for(var n =0; n<csvArray[0].length; n++){
-                        if(csvArray[0][n] === scene.meshes[m].name){
-                          break;
-                        }
-                        if(n == csvArray[0].length-1 && csvArray[0][n] !== scene.meshes[m].name){
-                          csvArray[0].push(scene.meshes[m].name);
-                        }
-                      }
-                    }
-                }
-                }
-                hideAllChildren(pickedMesh);
-                //pickedMesh.scaling = pickedMesh.scaling.scale(99/100);
-                //pickedMesh.scaling = pickedMesh.scaling.add(new BABYLON.Vector3(-0.01, -0.01, -0.01));
-              }
-              if(num == 4){
-                //xr.baseExperience.camera.position.y -= 0.03;
-              }
-          }
-             let xbuttonComponent = motionController.getComponent(xr_ids[3]);//x-button
-             xbuttonComponent.onButtonStateChangedObservable.add(() => {
-                 if (xbuttonComponent.value == 1) {
-                  //Sphere_Left_XButton.scaling= new BABYLON.Vector3(1.2,1.2,1.2);
-                  xbuttonComponent.repeatFunctionInterval = setInterval(XrepeatFunction, 10);
-                  //console.log("1");
-                 }
-                 if(xbuttonComponent.value == 0){
-                  //Sphere_Left_XButton.scaling=new BABYLON.Vector3(1,1,1);  
-                  //console.log("0");
-                  clearInterval(xbuttonComponent.repeatFunctionInterval);
-                 }
-             });
-             function YrepeatFunction() {
-              if(num == 1){
-                pickedMesh.position.z -= 0.03;
-              }
-              if(num == 2){
-                //pickedMesh.rotation = pickedMesh.rotation.add(new BABYLON.Vector3(0, 0.01, 0));
-                pickedMesh.scaling = pickedMesh.scaling.scale(100/99);
-              }
-              if(num == 3){
-                //pickedMesh.scaling = pickedMesh.scaling.scale(100/99);
-                //pickedMesh.scaling = pickedMesh.scaling.add(new BABYLON.Vector3(0.01, 0.01, 0.01));
-              }
-              if(num == 4){
-                //xr.baseExperience.camera.position.y += 0.01;
-              }
-             }
-             let ybuttonComponent = motionController.getComponent(xr_ids[4]);//y-button
-             ybuttonComponent.onButtonStateChangedObservable.add(() => {
+  //            function XrepeatFunction() {
+  //             if(num == 1){
+  //               pickedMesh.position.z += 0.03;
+  //             }
+  //             if(num == 2){
+  //               //pickedMesh.rotation = pickedMesh.rotation.add(new BABYLON.Vector3(0, -0.01, 0));
+  //               pickedMesh.scaling = pickedMesh.scaling.scale(99/100);
+  //             }
+  //             if(num == 3){
+  //               if(pickedMesh.name !== "cube"){
+  //                 for(var m =0; m<scene.meshes.length; m++){
+  //                   if(scene.meshes[m].isVisible == false){
+  //                     for(var n =0; n<csvArray[0].length; n++){
+  //                       if(csvArray[0][n] === scene.meshes[m].name){
+  //                         break;
+  //                       }
+  //                       if(n == csvArray[0].length-1 && csvArray[0][n] !== scene.meshes[m].name){
+  //                         csvArray[0].push(scene.meshes[m].name);
+  //                       }
+  //                     }
+  //                   }
+  //               }
+  //               }
+  //               hideAllChildren(pickedMesh);
+  //               //pickedMesh.scaling = pickedMesh.scaling.scale(99/100);
+  //               //pickedMesh.scaling = pickedMesh.scaling.add(new BABYLON.Vector3(-0.01, -0.01, -0.01));
+  //             }
+  //             if(num == 4){
+  //               //xr.baseExperience.camera.position.y -= 0.03;
+  //             }
+  //         }
+  //            let xbuttonComponent = motionController.getComponent(xr_ids[3]);//x-button
+  //            xbuttonComponent.onButtonStateChangedObservable.add(() => {
+  //                if (xbuttonComponent.value == 1) {
+  //                 //Sphere_Left_XButton.scaling= new BABYLON.Vector3(1.2,1.2,1.2);
+  //                 xbuttonComponent.repeatFunctionInterval = setInterval(XrepeatFunction, 10);
+  //                 //console.log("1");
+  //                }
+  //                if(xbuttonComponent.value == 0){
+  //                 //Sphere_Left_XButton.scaling=new BABYLON.Vector3(1,1,1);  
+  //                 //console.log("0");
+  //                 clearInterval(xbuttonComponent.repeatFunctionInterval);
+  //                }
+  //            });
+  //            function YrepeatFunction() {
+  //             if(num == 1){
+  //               pickedMesh.position.z -= 0.03;
+  //             }
+  //             if(num == 2){
+  //               //pickedMesh.rotation = pickedMesh.rotation.add(new BABYLON.Vector3(0, 0.01, 0));
+  //               pickedMesh.scaling = pickedMesh.scaling.scale(100/99);
+  //             }
+  //             if(num == 3){
+  //               //pickedMesh.scaling = pickedMesh.scaling.scale(100/99);
+  //               //pickedMesh.scaling = pickedMesh.scaling.add(new BABYLON.Vector3(0.01, 0.01, 0.01));
+  //             }
+  //             if(num == 4){
+  //               //xr.baseExperience.camera.position.y += 0.01;
+  //             }
+  //            }
+  //            let ybuttonComponent = motionController.getComponent(xr_ids[4]);//y-button
+  //            ybuttonComponent.onButtonStateChangedObservable.add(() => {
 
-                 if (ybuttonComponent.value == 1) {
-                  //Sphere_Left_YButton.scaling= new BABYLON.Vector3(1.2,1.2,1.2);
-                  ybuttonComponent.repeatFunctionInterval = setInterval(YrepeatFunction, 10);
-                 }
-                 if(ybuttonComponent.value == 0){
-                     //Sphere_Left_YButton.scaling=new BABYLON.Vector3(1,1,1);  
-                     clearInterval(ybuttonComponent.repeatFunctionInterval);
-                 }
-             });            
-        }
-        if (motionController.handness === 'right') {
-             const xr_ids = motionController.getComponentIds();
-             let triggerComponent = motionController.getComponent(xr_ids[0]);//xr-standard-trigger
-             triggerComponent.onButtonStateChangedObservable.add(() => {
-                 if (triggerComponent.pressed) {
-                     //Box_Right_Trigger.scaling= new BABYLON.Vector3(1.2,1.2,1.2);
+  //                if (ybuttonComponent.value == 1) {
+  //                 //Sphere_Left_YButton.scaling= new BABYLON.Vector3(1.2,1.2,1.2);
+  //                 ybuttonComponent.repeatFunctionInterval = setInterval(YrepeatFunction, 10);
+  //                }
+  //                if(ybuttonComponent.value == 0){
+  //                    //Sphere_Left_YButton.scaling=new BABYLON.Vector3(1,1,1);  
+  //                    clearInterval(ybuttonComponent.repeatFunctionInterval);
+  //                }
+  //            });            
+  //       }
+  //       if (motionController.handness === 'right') {
+  //            const xr_ids = motionController.getComponentIds();
+  //            let triggerComponent = motionController.getComponent(xr_ids[0]);//xr-standard-trigger
+  //            triggerComponent.onButtonStateChangedObservable.add(() => {
+  //                if (triggerComponent.pressed) {
+  //                    //Box_Right_Trigger.scaling= new BABYLON.Vector3(1.2,1.2,1.2);
                  
-                 }else{
-                     //Box_Right_Trigger.scaling= new BABYLON.Vector3(1,1,1);
+  //                }else{
+  //                    //Box_Right_Trigger.scaling= new BABYLON.Vector3(1,1,1);
                  
-                 }
-             });
-             let squeezeComponent = motionController.getComponent(xr_ids[1]);//xr-standard-squeeze
-             squeezeComponent.onButtonStateChangedObservable.add(() => {
-                 if (squeezeComponent.pressed) {
-                     //Box_Right_Squeeze.scaling= new BABYLON.Vector3(1.2,1.2,1.2);
+  //                }
+  //            });
+  //            let squeezeComponent = motionController.getComponent(xr_ids[1]);//xr-standard-squeeze
+  //            squeezeComponent.onButtonStateChangedObservable.add(() => {
+  //                if (squeezeComponent.pressed) {
+  //                    //Box_Right_Squeeze.scaling= new BABYLON.Vector3(1.2,1.2,1.2);
                   
-                 }else{
-                     //Box_Right_Squeeze.scaling=new BABYLON.Vector3(1,1,1);
-                 }
-             });
-             let thumbstickComponent = motionController.getComponent(xr_ids[2]);//xr-standard-thumbstick
-             thumbstickComponent.onButtonStateChangedObservable.add(() => {
-                 if (thumbstickComponent.pressed) {
-                     //Box_Right_ThumbStick.scaling= new BABYLON.Vector3(1.2,1.2,1.2);
-                 }else{
-                     //Box_Right_ThumbStick.scaling=new BABYLON.Vector3(1,1,1);
-                 }
+  //                }else{
+  //                    //Box_Right_Squeeze.scaling=new BABYLON.Vector3(1,1,1);
+  //                }
+  //            });
+  //            let thumbstickComponent = motionController.getComponent(xr_ids[2]);//xr-standard-thumbstick
+  //            thumbstickComponent.onButtonStateChangedObservable.add(() => {
+  //                if (thumbstickComponent.pressed) {
+  //                    //Box_Right_ThumbStick.scaling= new BABYLON.Vector3(1.2,1.2,1.2);
+  //                }else{
+  //                    //Box_Right_ThumbStick.scaling=new BABYLON.Vector3(1,1,1);
+  //                }
 
-             });
-             thumbstickComponent.onAxisValueChangedObservable.add((axes) => {
-                 //Box_Right_ThumbStick is moving according to stick axes but camera rotation is also changing..
-                 //Box_Right_ThumbStick.position.x += (axes.x)/100;
-                 //Box_Right_ThumbStick.position.y += (axes.y)/100;
-                // console.log(values.x, values.y);
-             });
+  //            });
+  //            thumbstickComponent.onAxisValueChangedObservable.add((axes) => {
+  //                //Box_Right_ThumbStick is moving according to stick axes but camera rotation is also changing..
+  //                //Box_Right_ThumbStick.position.x += (axes.x)/100;
+  //                //Box_Right_ThumbStick.position.y += (axes.y)/100;
+  //               // console.log(values.x, values.y);
+  //            });
 
-             let abuttonComponent = motionController.getComponent(xr_ids[3]);//a-button
-             abuttonComponent.onButtonStateChangedObservable.add(() => {
-                 if (abuttonComponent.pressed) {
-                     //Sphere_Right_AButton.scaling= new BABYLON.Vector3(1.2,1.2,1.2);
-                 }else{
-                     //Sphere_Right_AButton.scaling=new BABYLON.Vector3(1,1,1);  
-                 }
-             });
-             let bbuttonComponent = motionController.getComponent(xr_ids[4]);//b-button
-             bbuttonComponent.onButtonStateChangedObservable.add(() => {
-                 if (bbuttonComponent.pressed) {
-                     //Sphere_Right_BButton.scaling= new BABYLON.Vector3(1.2,1.2,1.2);
+  //            let abuttonComponent = motionController.getComponent(xr_ids[3]);//a-button
+  //            abuttonComponent.onButtonStateChangedObservable.add(() => {
+  //                if (abuttonComponent.pressed) {
+  //                    //Sphere_Right_AButton.scaling= new BABYLON.Vector3(1.2,1.2,1.2);
+  //                }else{
+  //                    //Sphere_Right_AButton.scaling=new BABYLON.Vector3(1,1,1);  
+  //                }
+  //            });
+  //            let bbuttonComponent = motionController.getComponent(xr_ids[4]);//b-button
+  //            bbuttonComponent.onButtonStateChangedObservable.add(() => {
+  //                if (bbuttonComponent.pressed) {
+  //                    //Sphere_Right_BButton.scaling= new BABYLON.Vector3(1.2,1.2,1.2);
                     
-                 }else{
-                     //Sphere_Right_BButton.scaling=new BABYLON.Vector3(1,1,1);  
-                 }
-             });
-        }
+  //                }else{
+  //                    //Sphere_Right_BButton.scaling=new BABYLON.Vector3(1,1,1);  
+  //                }
+  //            });
+  //       }
 
-        for(var n =0; n<csvArray.length; n++){
-          if(pickedMesh.name == csvArray[n][0]){
-            csvArray[n][1] = pickedMesh.position.x;
-            csvArray[n][2] = pickedMesh.position.y;
-            csvArray[n][3] = pickedMesh.position.z;
-            csvArray[n][4] = pickedMesh.rotation.x;
-            csvArray[n][5] = pickedMesh.rotation.y;
-            csvArray[n][6] = pickedMesh.rotation.z;
-            csvArray[n][7] = pickedMesh.scaling.x;
-            csvArray[n][8] = pickedMesh.scaling.y;
-            csvArray[n][9] = pickedMesh.scaling.z;
-          }
-        }
-    })
+  //       for(var n =0; n<csvArray.length; n++){
+  //         if(pickedMesh.name == csvArray[n][0]){
+  //           csvArray[n][1] = pickedMesh.position.x;
+  //           csvArray[n][2] = pickedMesh.position.y;
+  //           csvArray[n][3] = pickedMesh.position.z;
+  //           csvArray[n][4] = pickedMesh.rotation.x;
+  //           csvArray[n][5] = pickedMesh.rotation.y;
+  //           csvArray[n][6] = pickedMesh.rotation.z;
+  //           csvArray[n][7] = pickedMesh.scaling.x;
+  //           csvArray[n][8] = pickedMesh.scaling.y;
+  //           csvArray[n][9] = pickedMesh.scaling.z;
+  //         }
+  //       }
+  //   })
 
-  });
+  // });
   // Display "loading" text
   var advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
 
@@ -1501,35 +1502,6 @@ var buildScene = async function (scene) {
       loadingText.text = "Disconnected from the room.";
   });
 
-  // Add click event handler to move current player
-  // scene.onPointerDown = (event, pointer) => {
-  //     if (event.button == 0) {
-  //         var targetPosition = pointer.pickedPoint.clone();
-
-  //         // Position adjustments for the current play ground.
-  //         targetPosition.y = -1;
-  //         if (targetPosition.x > 245) targetPosition.x = 245;
-  //         else if (targetPosition.x < -245) targetPosition.x = -245;
-  //         if (targetPosition.z > 245) targetPosition.z = 245;
-  //         else if (targetPosition.z < -245) targetPosition.z = -245;
-
-  //         // set current player's next position immediatelly
-  //         playerNextPosition[room.sessionId] = targetPosition;
-
-  //         // Send position update to the server
-  //         room.send("updatePosition", {
-  //             x: targetPosition.x,
-  //             y: targetPosition.y,
-  //             z: targetPosition.z,
-  //         });
-  //     }
-  // };
-
-  //
-  // Smooth player positions using lerp
-  // https://doc.babylonjs.com/typedoc/classes/babylon.scalar#lerp
-  //
-
   //window.addEventListener("keydown", function (event) {
   scene.registerBeforeRender(function() {	
     var playerByName = scene.getMeshByName(`player-${room.sessionId}`);
@@ -1548,13 +1520,12 @@ var buildScene = async function (scene) {
     var playerByName = scene.getMeshByName(`player-${room.sessionId}`);
 
     var objectByName = scene.getCameraByName(`camera-${room.sessionId}`);
-    if(xr_Check == 1){
-       //objectByName.position = xr.baseExperience.camera.position;
-       //objectByName.rotation = xr.baseExperience.camera.rotation;
-       //console.log(xr.baseExperience.camera.target.subtract(xr.baseExperience.camera.position));
-       objectByName.position = BABYLON.Vector3.Lerp(objectByName.position, xr.baseExperience.camera.position, 0.5);
-       objectByName.rotation = BABYLON.Vector3.Lerp(objectByName.rotation, xr.baseExperience.camera.rotation, 0.5);
-    }
+    // if(xr_Check == 1){
+    //    //objectByName.position = xr.baseExperience.camera.position;
+    //    //objectByName.rotation = xr.baseExperience.camera.rotation;
+    //    objectByName.position = BABYLON.Vector3.Lerp(objectByName.position, xr.baseExperience.camera.position, 0.5);
+    //    objectByName.rotation = BABYLON.Vector3.Lerp(objectByName.rotation, xr.baseExperience.camera.rotation, 0.5);
+    // }
     //var objectByName = xr.baseExperience.camera;
     //var objectByName = scene.activeCamera;
     if (objectByName && playerByName) {
