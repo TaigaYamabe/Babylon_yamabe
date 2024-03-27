@@ -1551,7 +1551,8 @@ var buildScene = async function (scene) {
     if(xr_Check == 1){
        //objectByName.position = xr.baseExperience.camera.position;
        //objectByName.rotation = xr.baseExperience.camera.rotation;
-       //console.log(xr.baseExperience.camera.target.subtract(xr.baseExperience.camera.position));
+       var target = xr.baseExperience.camera.target.subtract(xr.baseExperience.camera.position);
+       console.log(target);
        objectByName.position = BABYLON.Vector3.Lerp(objectByName.position, xr.baseExperience.camera.position, 0.5);
        objectByName.rotation = BABYLON.Vector3.Lerp(objectByName.rotation, xr.baseExperience.camera.rotation, 0.5);
     }
